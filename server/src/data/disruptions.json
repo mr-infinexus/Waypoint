@@ -1,0 +1,37 @@
+[
+  {
+    "serviceNumber": "6E-501",
+    "type": "delay",
+    "description": "ATC congestion and runway queue at DEL T3",
+    "reportedByEmail": "ops@indigo.in",
+    "delayMinutes": 60
+  },
+  {
+    "serviceNumber": "TR-SHRAM-EXP",
+    "type": "delay",
+    "description": "Signal clearance and track maintenance near Kanpur",
+    "reportedByEmail": "ops@indianrail.gov.in",
+    "delayMinutes": 45
+  },
+  {
+    "serviceNumber": "TR-BRINDAVAN-EXP",
+    "type": "delay",
+    "description": "Overhead equipment maintenance near Katpadi Junction",
+    "reportedByEmail": "ops@indianrail.gov.in",
+    "delayMinutes": 30
+  },
+  {
+    "serviceNumber": "DTC-ISBT-DEL-02",
+    "type": "delay",
+    "description": "Heavy traffic congestion on Delhi Ring Road",
+    "reportedByEmail": "ops@statebuses.in",
+    "delayMinutes": 20
+  },
+  {
+    "serviceNumber": "TR-12954",
+    "type": "delay",
+    "description": "Monsoon speed regulation in Western Ghats corridor",
+    "reportedByEmail": "ops@indianrail.gov.in",
+    "delayMinutes": 40
+  }
+]

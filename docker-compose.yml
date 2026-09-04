@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: waypoint-postgres
+    environment:
+      POSTGRES_USER: waypoint
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: waypoint_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+
+  redis:
+    image: redis:8
+    container_name: waypoint-redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:

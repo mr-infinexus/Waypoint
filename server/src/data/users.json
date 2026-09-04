@@ -1,0 +1,68 @@
+[
+  {
+    "name": "Platform Superadmin",
+    "email": "admin@waypoint.com",
+    "role": "admin",
+    "isActive": true
+  },
+  {
+    "name": "IndiGo Airlines",
+    "email": "ops@indigo.in",
+    "role": "operator",
+    "isActive": true
+  },
+  {
+    "name": "Air India",
+    "email": "ops@airindia.in",
+    "role": "operator",
+    "isActive": true
+  },
+  {
+    "name": "Indian Railways",
+    "email": "ops@indianrail.gov.in",
+    "role": "operator",
+    "isActive": true
+  },
+  {
+    "name": "Metro Transit India",
+    "email": "ops@metrotransit.in",
+    "role": "operator",
+    "isActive": true
+  },
+  {
+    "name": "State Intercity Bus Corridors",
+    "email": "ops@statebuses.in",
+    "role": "operator",
+    "isActive": true
+  },
+  {
+    "name": "Suspended Charter Co",
+    "email": "suspended@badtransit.com",
+    "role": "operator",
+    "isActive": false
+  },
+  {
+    "name": "Aarav Patel",
+    "email": "aarav@gmail.com",
+    "role": "traveler",
+    "isActive": true
+  },
+  {
+    "name": "Ananya Iyer",
+    "email": "ananya@gmail.com",
+    "role": "traveler",
+    "isActive": true
+  },
+  {
+    "name": "Rohan Sharma",
+    "email": "rohan@gmail.com",
+    "role": "traveler",
+    "isActive": true
+  },
+  {
+    "name": "Priya Nair",
+    "email": "priya@gmail.com",
+    "role": "traveler",
+    "isActive": true
+  }
+]
