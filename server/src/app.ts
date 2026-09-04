@@ -21,7 +21,6 @@ import bookingRoutes from './routes/booking.routes';
 import stationsRoutes from './routes/stations.routes';
 import docsRoutes from './routes/docs.routes';
 
-// Documentation routes
 app.use('/api/docs', docsRoutes);
 
 app.use('/api/auth', authRoutes);
@@ -31,7 +30,6 @@ app.use('/api/search', searchRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/stations', stationsRoutes);
 
-// Test routes for RBAC verification
 app.get('/api/admin-only', authenticateJWT, requireRole([UserRole.ADMIN]), (req, res) => {
   res.status(200).json({ message: 'Welcome Admin' });
 });

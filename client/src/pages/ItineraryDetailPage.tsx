@@ -51,8 +51,8 @@ export function ItineraryDetailPage() {
 
   const prebookedPath: SearchResultPath | undefined = state?.path;
 
-  const [itinerary, setItinerary] = useState<Itinerary | null>(null);
-  const [loading, setLoading] = useState(Boolean(id));
+  const [itinerary, setItinerary] = useState<Itinerary | null>(state?.updatedItinerary || null);
+  const [loading, setLoading] = useState(Boolean(id) && !state?.updatedItinerary);
   const [booking, setBooking] = useState(false);
   const [error, setError] = useState('');
 
@@ -61,16 +61,11 @@ export function ItineraryDetailPage() {
   useEffect(() => {
     if (!id) return;
     let isMounted = true;
-    api('/bookings/my')
-      .then((data: Itinerary[]) => {
+    api(`/bookings/my/${id}`)
+      .then((data: Itinerary) => {
         if (!isMounted) return;
-        const found = data.find((b) => b.id === id);
-        if (found) {
-          setItinerary(found);
-          setError('');
-        } else {
-          setError('Booking not found.');
-        }
+        setItinerary(data);
+        setError('');
       })
       .catch((err: { message?: string }) => {
         if (!isMounted) return;
@@ -105,11 +100,15 @@ export function ItineraryDetailPage() {
     );
   }
 
-  const services: Service[] = isBooked
+  const activeSegments = isBooked
     ? (itinerary?.segments || [])
+      .filter((s) => !s.tickets || s.tickets.length === 0 || s.tickets.some((t) => t.status !== 'cancelled'))
       .slice()
       .sort((a, b) => a.segmentOrder - b.segmentOrder)
-      .map((s) => s.service)
+    : [];
+
+  const services: Service[] = isBooked
+    ? activeSegments.map((s) => s.service)
     : prebookedPath?.services || [];
 
   const originWalk: WalkLeg | null | undefined = isBooked ? itinerary?.originWalk : prebookedPath?.originWalk;
@@ -161,12 +160,11 @@ export function ItineraryDetailPage() {
   });
 
   const polylinePositions: [number, number][] = mapPoints.map((p) => p.pos);
-  const mapCenter: [number, number] = mapPoints.length > 0 ? mapPoints[0].pos : [21937, 78.9629];
+  const mapCenter: [number, number] = mapPoints.length > 0 ? mapPoints[0].pos : [21.937, 78.9629];
   const isDisrupted = itinerary?.status === 'disrupted';
 
   return (
     <div className="max-w-5xl mx-auto space-y-5">
-      {/* Header */}
       <div className="flex items-center gap-4">
         <Button
           variant="outline"
@@ -194,7 +192,25 @@ export function ItineraryDetailPage() {
         </div>
       </div>
 
-      {/* Disruption Alert */}
+      {state?.updatedItinerary && (
+        <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-emerald-500/15 text-emerald-400 shrink-0">
+              <CheckCircle2 className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-foreground text-sm">Rebooking Confirmed — Updated Journey Active</h3>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Your new route schedule is active and updated tickets are confirmed. All obsolete tickets have been voided.
+              </p>
+            </div>
+          </div>
+          <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 bg-emerald-500/10 text-xs font-semibold shrink-0">
+            Confirmed Active
+          </Badge>
+        </div>
+      )}
+
       {isDisrupted && (
         <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
           <div className="flex items-start gap-3">
@@ -202,25 +218,34 @@ export function ItineraryDetailPage() {
               <AlertTriangle className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="font-semibold text-foreground text-sm">Service Disruption Notice</h3>
+              <h3 className="font-semibold text-foreground text-sm">Service Disruption — Action Required</h3>
               <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                Your itinerary has been disrupted due to schedule changes or cancellations. Please search for alternative routes.
+                {itinerary?.pendingAlternatives && itinerary.pendingAlternatives.length > 0
+                  ? `${itinerary.pendingAlternatives.length} alternative route${itinerary.pendingAlternatives.length > 1 ? 's' : ''} are ready for you to review and confirm.`
+                  : 'Your itinerary has been disrupted. No automatic alternatives were found — please search manually.'}
               </p>
             </div>
           </div>
-          <Button
-            onClick={() => navigate('/search')}
-            variant="outline"
-            className="text-xs rounded-lg shrink-0 border-amber-500/30 text-amber-400 hover:bg-amber-500/10"
-          >
-            Find Alternatives
-          </Button>
+          {itinerary?.pendingAlternatives && itinerary.pendingAlternatives.length > 0 ? (
+            <Button
+              onClick={() => navigate(`/disruption/${itinerary!.id}`)}
+              className="text-xs rounded-lg shrink-0 h-9 px-4 font-semibold"
+            >
+              Review Alternatives
+            </Button>
+          ) : (
+            <Button
+              onClick={() => navigate('/search')}
+              variant="outline"
+              className="text-xs rounded-lg shrink-0 border-amber-500/30 text-amber-400 hover:bg-amber-500/10"
+            >
+              Search Manually
+            </Button>
+          )}
         </div>
       )}
 
-      {/* Main Itinerary Overview Card */}
       <div className="p-5 sm:p-6 rounded-2xl bg-card border border-border/60 shadow-xs space-y-5 min-w-0 max-w-full overflow-hidden">
-        {/* Fare & Timing Bar */}
         <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-border/40 min-w-0">
           <div>
             <span className="text-[11px] font-medium text-muted-foreground">Total Fare</span>
@@ -253,7 +278,6 @@ export function ItineraryDetailPage() {
           </div>
         </div>
 
-        {/* Journey Timeline Container */}
         <div>
           <span className="text-[11px] font-medium text-muted-foreground block mb-3">
             Journey Sequence & Guaranteed Layover Buffers
@@ -267,7 +291,6 @@ export function ItineraryDetailPage() {
           </div>
         </div>
 
-        {/* Booking CTA for prebooked path */}
         {!isBooked && (
           <div className="pt-4 border-t border-border/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <p className="text-xs text-muted-foreground">
@@ -294,7 +317,6 @@ export function ItineraryDetailPage() {
         )}
       </div>
 
-      {/* Map Preview */}
       {mapPoints.length > 0 && (
         <div className="p-5 sm:p-6 rounded-2xl bg-card border border-border/60 shadow-xs space-y-4">
           <div className="flex items-center gap-2">
@@ -340,7 +362,6 @@ export function ItineraryDetailPage() {
         </div>
       )}
 
-      {/* Boarding Pass for Confirmed Bookings */}
       {isBooked && itinerary && (
         <div className="p-5 sm:p-6 rounded-2xl bg-card border border-border/60 shadow-xs flex flex-col sm:flex-row items-center gap-5">
           <div className="bg-white p-3 rounded-xl border border-border/40 shadow-2xs shrink-0">
@@ -368,7 +389,6 @@ export function ItineraryDetailPage() {
         </div>
       )}
 
-      {/* Transit Leg Breakdown */}
       <div className="space-y-3">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground px-1">
           Transit Leg Breakdown
@@ -376,6 +396,9 @@ export function ItineraryDetailPage() {
         <div className="grid gap-3">
           {services.map((service, idx) => {
             const ModeIcon = getTransitIcon(service.type);
+            const seg = isBooked ? activeSegments[idx] : undefined;
+            const ticket = seg?.tickets?.find((t) => t.status === 'valid') || seg?.tickets?.[0];
+
             return (
               <div
                 key={service.id || idx}
@@ -389,10 +412,31 @@ export function ItineraryDetailPage() {
                     <div className="font-medium text-sm text-foreground">
                       {service.originStation.city} ({service.originStation.code}) → {service.destinationStation.city} ({service.destinationStation.code})
                     </div>
-                    <div className="text-xs text-muted-foreground mt-1 flex items-center gap-2">
+                    <div className="text-xs text-muted-foreground mt-1 flex flex-wrap items-center gap-2">
                       <span className="capitalize font-medium">{service.type}</span>
                       <span>•</span>
                       <span>{service.operator?.name || 'Transit Line'} {service.serviceNumber}</span>
+                      {service.isCancelled ? (
+                        <Badge variant="outline" className="border-rose-500/40 text-rose-300 bg-rose-500/10 text-[10px] font-bold">
+                          Cancelled
+                        </Badge>
+                      ) : service.isDelayed ? (
+                        <Badge variant="outline" className="border-amber-500/40 text-amber-300 bg-amber-500/10 text-[10px] font-semibold">
+                          {itinerary?.status === 'active' ? 'Schedule Adjusted' : 'Delayed'}
+                        </Badge>
+                      ) : null}
+                      {ticket && (
+                        <Badge
+                          variant="outline"
+                          className={`text-[10px] font-semibold py-0.5 px-2 rounded-md ${
+                            ticket.status === 'valid'
+                              ? 'border-emerald-500/30 text-emerald-400 bg-emerald-500/10'
+                              : 'border-muted text-muted-foreground bg-muted/40'
+                          }`}
+                        >
+                          {ticket.status === 'valid' ? 'Ticket Confirmed' : ticket.status}
+                        </Badge>
+                      )}
                     </div>
                   </div>
                 </div>

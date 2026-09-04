@@ -115,7 +115,9 @@ export function BookingsPage() {
 
       <div className="grid gap-5">
         {bookings.map((booking) => {
-          const segments = [...(booking.segments || [])].sort((a, b) => a.segmentOrder - b.segmentOrder);
+          const segments = [...(booking.segments || [])]
+            .filter((s) => !s.tickets || s.tickets.length === 0 || s.tickets.some((t) => t.status !== 'cancelled'))
+            .sort((a, b) => a.segmentOrder - b.segmentOrder);
           const firstService = segments[0]?.service;
           const lastService = segments[segments.length - 1]?.service;
 
@@ -210,7 +212,19 @@ export function BookingsPage() {
                   </div>
 
                   <div className="pt-3 border-t border-border/40 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
-                    <span className="font-bold text-primary group-hover:translate-x-1 transition-transform flex items-center gap-1 shrink-0 self-end sm:self-auto">
+                    {booking.status === 'disrupted' && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/disruption/${booking.id}`);
+                        }}
+                        className="flex items-center gap-1.5 text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/25 hover:bg-amber-500/20 transition-colors px-3 py-1.5 rounded-lg shrink-0"
+                      >
+                        <ArrowRight className="w-3.5 h-3.5" />
+                        Review Alternatives
+                      </button>
+                    )}
+                    <span className="font-bold text-primary group-hover:translate-x-1 transition-transform flex items-center gap-1 shrink-0 self-end sm:self-auto ml-auto">
                       <span>View Details</span>
                       <ArrowRight className="w-4 h-4" />
                     </span>

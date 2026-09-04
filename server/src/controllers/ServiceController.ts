@@ -7,9 +7,9 @@ export class ServiceController {
   static async create(req: Request, res: Response, next: NextFunction) {
     try {
       const operatorId = req.user!.userId;
-      const { type, serviceNumber, originStationId, destinationStationId, departureTime, arrivalTime, price, seatCapacity, vehicleLogo } = req.body;
+      const { type, serviceNumber, originStationId, destinationStationId, departureTime, arrivalTime, price } = req.body;
       const service = await catalogService.createService(
-        operatorId, type, serviceNumber, originStationId, destinationStationId, new Date(departureTime), new Date(arrivalTime), price, seatCapacity, vehicleLogo
+        operatorId, type, serviceNumber, originStationId, destinationStationId, new Date(departureTime), new Date(arrivalTime), price
       );
       res.status(201).json(service);
     } catch (error) {

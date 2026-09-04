@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Footprints, Compass, Building2, User, ArrowRight, Loader2 } from 'lucide-react';
+import { Footprints, Compass, Building2, User, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react';
 
 const registerSchema = z.object({
   name: z.string().min(2, 'Full name must be at least 2 characters'),
@@ -22,6 +22,7 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export function RegisterPage() {
   const [error, setError] = useState('');
+  const [pendingApproval, setPendingApproval] = useState(false);
   const { setToken, role: currentRole } = useAuth();
   const navigate = useNavigate();
 
@@ -43,7 +44,11 @@ export function RegisterPage() {
         method: 'POST',
         body: JSON.stringify(values),
       });
-      setToken(data.token);
+      if (data.pendingApproval || !data.token) {
+        setPendingApproval(true);
+      } else {
+        setToken(data.token);
+      }
     } catch (e: unknown) {
       if (e instanceof ApiError) {
         setError(e.message);
@@ -120,13 +125,34 @@ export function RegisterPage() {
               </p>
             </div>
 
-            {error && (
-              <div className="p-4 rounded-xl bg-destructive/15 border border-destructive/30 text-destructive text-sm font-medium">
-                {error}
+            {pendingApproval ? (
+              <div className="p-6 rounded-2xl bg-primary/10 border border-primary/25 space-y-4 text-center">
+                <div className="w-12 h-12 mx-auto rounded-full bg-primary/20 flex items-center justify-center text-primary border border-primary/30">
+                  <CheckCircle2 className="w-6 h-6" />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-base font-bold text-foreground">Operator Registration Submitted</h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Your operator account has been registered and is pending administrator verification. Once an administrator grants access to your profile, you will be able to log in to manage schedules.
+                  </p>
+                </div>
+                <div className="pt-2">
+                  <Link to="/login">
+                    <Button className="w-full rounded-xl h-10 font-semibold">
+                      Proceed to Sign In
+                    </Button>
+                  </Link>
+                </div>
               </div>
-            )}
+            ) : (
+              <>
+                {error && (
+                  <div className="p-4 rounded-xl bg-destructive/15 border border-destructive/30 text-destructive text-sm font-medium">
+                    {error}
+                  </div>
+                )}
 
-            <Form {...form}>
+                <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                   control={form.control}
@@ -236,6 +262,8 @@ export function RegisterPage() {
                 </Button>
               </form>
             </Form>
+            </>
+            )}
 
             <div className="pt-4 border-t border-border/40 text-center">
               <p className="text-sm text-muted-foreground">

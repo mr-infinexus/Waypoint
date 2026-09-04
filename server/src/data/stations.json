@@ -28,22 +28,22 @@
     "longitude": 77.253400
   },
   {
-    "code": "DLI_ISBT",
-    "name": "Kashmere Gate ISBT (Interstate Bus Terminal)",
-    "city": "New Delhi",
-    "latitude": 28.667000,
-    "longitude": 77.228500
-  },
-  {
     "code": "DLI_ANVT",
-    "name": "Anand Vihar Railway Terminal",
+    "name": "Anand Vihar Railway & Bus Terminal",
     "city": "New Delhi",
     "latitude": 28.650800,
     "longitude": 77.315300
   },
   {
+    "code": "DLI_ISBT",
+    "name": "Kashmere Gate ISBT Bus Terminal",
+    "city": "New Delhi",
+    "latitude": 28.667000,
+    "longitude": 77.228500
+  },
+  {
     "code": "DLI_SKK",
-    "name": "Sarai Kale Khan ISBT / RRTS Hub",
+    "name": "Sarai Kale Khan ISBT & RRTS Hub",
     "city": "New Delhi",
     "latitude": 28.591200,
     "longitude": 77.258000
@@ -56,95 +56,102 @@
     "longitude": 72.865600
   },
   {
+    "code": "BOM_METRO",
+    "name": "CSMIA Airport Metro Line 3",
+    "city": "Mumbai",
+    "latitude": 19.090500,
+    "longitude": 72.866500
+  },
+  {
     "code": "CSMT",
     "name": "Chhatrapati Shivaji Maharaj Terminus",
     "city": "Mumbai",
-    "latitude": 18.939800,
-    "longitude": 72.835400
+    "latitude": 18.940000,
+    "longitude": 72.835300
   },
   {
-    "code": "MUM_BCT",
+    "code": "MMCT",
     "name": "Mumbai Central Railway Station",
     "city": "Mumbai",
     "latitude": 18.969600,
     "longitude": 72.819300
   },
   {
-    "code": "MUM_METRO",
-    "name": "Andheri Metro Interchange",
+    "code": "BDTS",
+    "name": "Bandra Terminus",
     "city": "Mumbai",
-    "latitude": 19.119700,
-    "longitude": 72.846400
+    "latitude": 19.060700,
+    "longitude": 72.840700
   },
   {
-    "code": "MUM_BKC",
-    "name": "Bandra Kurla Complex Metro Hub",
+    "code": "BOM_ISBT",
+    "name": "Borivali Intercity Bus Terminal",
     "city": "Mumbai",
-    "latitude": 19.066400,
-    "longitude": 72.867900
+    "latitude": 19.228800,
+    "longitude": 72.857400
   },
   {
-    "code": "MUM_GHATKOPAR",
-    "name": "Ghatkopar Metro / Railway Interchange",
-    "city": "Mumbai",
-    "latitude": 19.086000,
-    "longitude": 72.908000
-  },
-  {
-    "code": "PANVEL",
-    "name": "Panvel Railway Station",
-    "city": "Mumbai",
-    "latitude": 18.993400,
-    "longitude": 73.116000
-  },
-  {
-    "code": "MUM_THANE",
-    "name": "Thane Railway Station",
+    "code": "TNA",
+    "name": "Thane Junction Transit Terminal",
     "city": "Mumbai",
     "latitude": 19.186000,
-    "longitude": 72.975400
+    "longitude": 72.975600
   },
   {
     "code": "BLR",
-    "name": "Kempegowda International Airport T1",
+    "name": "Kempegowda International Airport T1/T2",
     "city": "Bengaluru",
     "latitude": 13.198600,
     "longitude": 77.706600
   },
   {
+    "code": "BLR_BUS",
+    "name": "Kempegowda Airport KIAL Bus Bay",
+    "city": "Bengaluru",
+    "latitude": 13.199000,
+    "longitude": 77.707000
+  },
+  {
     "code": "SBC",
-    "name": "KSR Bengaluru City Railway Station",
+    "name": "KSR Bengaluru City Junction Railway Station",
     "city": "Bengaluru",
     "latitude": 12.978100,
-    "longitude": 77.569500
+    "longitude": 77.569600
   },
   {
-    "code": "BLR_MAJESTIC",
-    "name": "Kempegowda Majestic Metro Interchange",
-    "city": "Bengaluru",
-    "latitude": 12.976700,
-    "longitude": 77.572800
-  },
-  {
-    "code": "BLR_YPR",
+    "code": "YPR",
     "name": "Yesvantpur Junction Railway Station",
     "city": "Bengaluru",
-    "latitude": 13.023400,
-    "longitude": 77.550100
+    "latitude": 13.023800,
+    "longitude": 77.550300
   },
   {
-    "code": "BLR_WHITEFIELD",
-    "name": "Whitefield Kadugodi Metro Terminal",
+    "code": "SMVB",
+    "name": "Sir M. Visvesvaraya Terminal Baiyappanahalli",
     "city": "Bengaluru",
-    "latitude": 12.996100,
-    "longitude": 77.761200
+    "latitude": 12.992200,
+    "longitude": 77.653400
   },
   {
-    "code": "MYS",
-    "name": "Mysuru Railway Station",
-    "city": "Mysuru",
-    "latitude": 12.305100,
-    "longitude": 76.655100
+    "code": "BLR_METRO",
+    "name": "Majestic Namma Metro Interchange",
+    "city": "Bengaluru",
+    "latitude": 12.977500,
+    "longitude": 77.571000
+  },
+  {
+    "code": "BLR_ISBT",
+    "name": "Kempegowda Majestic ISBT Bus Terminal",
+    "city": "Bengaluru",
+    "latitude": 12.976500,
+    "longitude": 77.572500
+  },
+  {
+    "code": "BLR_SHNT",
+    "name": "Shantinagar Bus Station",
+    "city": "Bengaluru",
+    "latitude": 12.953400,
+    "longitude": 77.595200
   },
   {
     "code": "MAA",
@@ -154,388 +161,129 @@
     "longitude": 80.170900
   },
   {
-    "code": "MAS",
-    "name": "Chennai Central Railway Station",
+    "code": "MAA_METRO",
+    "name": "Chennai Airport Metro Station",
     "city": "Chennai",
-    "latitude": 13.082700,
-    "longitude": 80.270700
+    "latitude": 12.993000,
+    "longitude": 80.171500
   },
   {
-    "code": "MAA_MS",
+    "code": "MAS",
+    "name": "Puratchi Thalaivar Dr. MGR Chennai Central Station",
+    "city": "Chennai",
+    "latitude": 13.082700,
+    "longitude": 80.275500
+  },
+  {
+    "code": "MS",
     "name": "Chennai Egmore Railway Station",
     "city": "Chennai",
-    "latitude": 13.078400,
+    "latitude": 13.078200,
     "longitude": 80.260800
   },
   {
-    "code": "MAA_CMBT",
-    "name": "Chennai Mofussil Bus Terminus (Koyambedu)",
+    "code": "TBM",
+    "name": "Tambaram Railway Terminal",
     "city": "Chennai",
-    "latitude": 13.069400,
-    "longitude": 80.205600
+    "latitude": 12.925000,
+    "longitude": 80.116700
   },
   {
-    "code": "MAA_ALANDUR",
-    "name": "Alandur Metro Interchange",
+    "code": "MAA_ISBT",
+    "name": "Puratchi Thalaivar Dr. MGR Bus Terminus (CMBT)",
     "city": "Chennai",
-    "latitude": 13.003900,
-    "longitude": 80.201400
-  },
-  {
-    "code": "PY",
-    "name": "Puducherry Railway Station",
-    "city": "Puducherry",
-    "latitude": 11.941600,
-    "longitude": 79.808300
+    "latitude": 13.067300,
+    "longitude": 80.205700
   },
   {
     "code": "HYD",
-    "name": "Rajiv Gandhi International Airport",
+    "name": "Rajiv Gandhi International Airport Shamshabad",
     "city": "Hyderabad",
     "latitude": 17.240300,
     "longitude": 78.429400
   },
   {
-    "code": "SC",
-    "name": "Secunderabad Railway Station",
+    "code": "HYD_BUS",
+    "name": "RGIA Airport Pushpak Bus Terminal",
     "city": "Hyderabad",
-    "latitude": 17.439900,
-    "longitude": 78.498300
+    "latitude": 17.241000,
+    "longitude": 78.430000
   },
   {
-    "code": "HYD_HYB",
-    "name": "Hyderabad Deccan Nampally Station",
+    "code": "SC",
+    "name": "Secunderabad Junction Railway Station",
+    "city": "Hyderabad",
+    "latitude": 17.433400,
+    "longitude": 78.501600
+  },
+  {
+    "code": "HYB",
+    "name": "Hyderabad Deccan Nampally Railway Station",
     "city": "Hyderabad",
     "latitude": 17.391700,
-    "longitude": 78.468200
+    "longitude": 78.468700
   },
   {
-    "code": "HYD_AMEERPET",
-    "name": "Ameerpet Metro Interchange",
+    "code": "KCG",
+    "name": "Kacheguda Railway Station",
     "city": "Hyderabad",
-    "latitude": 17.437500,
-    "longitude": 78.448200
+    "latitude": 17.387800,
+    "longitude": 78.498800
   },
   {
-    "code": "HYD_MGBS",
-    "name": "Mahatma Gandhi Bus Station (MGBS / Imlibun)",
+    "code": "HYD_ISBT",
+    "name": "Mahatma Gandhi Bus Station (MGBS)",
     "city": "Hyderabad",
-    "latitude": 17.378900,
-    "longitude": 78.481200
+    "latitude": 17.377600,
+    "longitude": 78.483900
   },
   {
-    "code": "AMD",
-    "name": "Sardar Vallabhbhai Patel International Airport",
-    "city": "Ahmedabad",
-    "latitude": 23.073500,
-    "longitude": 72.634700
-  },
-  {
-    "code": "ADI",
-    "name": "Ahmedabad Junction Railway Station",
-    "city": "Ahmedabad",
-    "latitude": 23.025800,
-    "longitude": 72.598400
-  },
-  {
-    "code": "SURAT",
-    "name": "Surat Railway Station",
-    "city": "Surat",
-    "latitude": 21.201900,
-    "longitude": 72.847100
+    "code": "HYD_JBS",
+    "name": "Jubilee Bus Station (JBS)",
+    "city": "Hyderabad",
+    "latitude": 17.449700,
+    "longitude": 78.503400
   },
   {
     "code": "CCU",
-    "name": "Netaji Subhas Chandra Bose International Airport",
+    "name": "Netaji Subhash Chandra Bose International Airport",
     "city": "Kolkata",
-    "latitude": 22.654900,
+    "latitude": 22.654700,
     "longitude": 88.446700
   },
   {
     "code": "HWH",
-    "name": "Howrah Junction Railway Station",
+    "name": "Howrah Railway Terminus",
     "city": "Kolkata",
-    "latitude": 22.585100,
-    "longitude": 88.342500
+    "latitude": 22.583900,
+    "longitude": 88.342600
   },
   {
     "code": "SDAH",
     "name": "Sealdah Railway Station",
     "city": "Kolkata",
-    "latitude": 22.565000,
-    "longitude": 88.369700
+    "latitude": 22.568400,
+    "longitude": 88.371200
   },
   {
-    "code": "CCU_ESPLANADE",
-    "name": "Esplanade Metro Interchange Hub",
+    "code": "KOAA",
+    "name": "Kolkata Railway Terminal (Chitpur)",
+    "city": "Kolkata",
+    "latitude": 22.603500,
+    "longitude": 88.376800
+  },
+  {
+    "code": "CCU_ISBT",
+    "name": "Esplanade Central Bus Terminus (Babughat)",
     "city": "Kolkata",
     "latitude": 22.564500,
     "longitude": 88.351800
   },
   {
-    "code": "COK",
-    "name": "Cochin International Airport",
-    "city": "Kochi",
-    "latitude": 10.152000,
-    "longitude": 76.401900
-  },
-  {
-    "code": "ERS",
-    "name": "Ernakulam Junction Railway Station",
-    "city": "Kochi",
-    "latitude": 9.981600,
-    "longitude": 76.299900
-  },
-  {
-    "code": "COK_ALUVA",
-    "name": "Aluva Metro & Railway Interchange",
-    "city": "Kochi",
-    "latitude": 10.110200,
-    "longitude": 76.353300
-  },
-  {
-    "code": "COK_WATER_HC",
-    "name": "High Court Water Metro Jetty",
-    "city": "Kochi",
-    "latitude": 9.982500,
-    "longitude": 76.275500
-  },
-  {
-    "code": "COK_WATER_VYPIN",
-    "name": "Vypin Water Metro Jetty",
-    "city": "Kochi",
-    "latitude": 9.992000,
-    "longitude": 76.242000
-  },
-  {
-    "code": "TRV",
-    "name": "Trivandrum International Airport",
-    "city": "Thiruvananthapuram",
-    "latitude": 8.482400,
-    "longitude": 76.919800
-  },
-  {
-    "code": "TVC",
-    "name": "Thiruvananthapuram Central Railway Station",
-    "city": "Thiruvananthapuram",
-    "latitude": 8.487500,
-    "longitude": 76.952500
-  },
-  {
-    "code": "PAT",
-    "name": "Jay Prakash Narayan Airport Patna",
-    "city": "Patna",
-    "latitude": 25.591300,
-    "longitude": 85.090000
-  },
-  {
-    "code": "PNBE",
-    "name": "Patna Junction Railway Station",
-    "city": "Patna",
-    "latitude": 25.612500,
-    "longitude": 85.178100
-  },
-  {
-    "code": "JAI",
-    "name": "Jaipur International Airport",
-    "city": "Jaipur",
-    "latitude": 26.824200,
-    "longitude": 75.812200
-  },
-  {
-    "code": "JP",
-    "name": "Jaipur Junction Railway Station",
-    "city": "Jaipur",
-    "latitude": 26.919400,
-    "longitude": 75.787400
-  },
-  {
-    "code": "JAI_SINDHI_CAMP",
-    "name": "Sindhi Camp Central Bus Stand",
-    "city": "Jaipur",
-    "latitude": 26.923000,
-    "longitude": 75.801000
-  },
-  {
-    "code": "LKO",
-    "name": "Chaudhary Charan Singh International Airport",
-    "city": "Lucknow",
-    "latitude": 26.760600,
-    "longitude": 80.889300
-  },
-  {
-    "code": "LJN",
-    "name": "Lucknow Charbagh Railway Station",
-    "city": "Lucknow",
-    "latitude": 26.846700,
-    "longitude": 80.946200
-  },
-  {
-    "code": "LKO_CNB",
-    "name": "Kanpur Central Railway Station",
-    "city": "Kanpur",
-    "latitude": 26.454700,
-    "longitude": 80.350700
-  },
-  {
-    "code": "BSB",
-    "name": "Varanasi Junction (Kashi) Railway Station",
-    "city": "Varanasi",
-    "latitude": 25.328400,
-    "longitude": 82.986300
-  },
-  {
-    "code": "VNS",
-    "name": "Lal Bahadur Shastri International Airport",
-    "city": "Varanasi",
-    "latitude": 25.452400,
-    "longitude": 82.859300
-  },
-  {
-    "code": "PNQ",
-    "name": "Pune International Airport",
-    "city": "Pune",
-    "latitude": 18.582200,
-    "longitude": 73.919700
-  },
-  {
-    "code": "PUNE",
-    "name": "Pune Junction Railway Station",
-    "city": "Pune",
-    "latitude": 18.528400,
-    "longitude": 73.874200
-  },
-  {
-    "code": "PUNE_SWARGATE",
-    "name": "Swargate Multimodal Hub",
-    "city": "Pune",
-    "latitude": 18.501500,
-    "longitude": 73.857000
-  },
-  {
-    "code": "NAG",
-    "name": "Dr. Babasaheb Ambedkar International Airport",
-    "city": "Nagpur",
-    "latitude": 21.092200,
-    "longitude": 79.047200
-  },
-  {
-    "code": "NGP",
-    "name": "Nagpur Junction Railway Station",
-    "city": "Nagpur",
-    "latitude": 21.145800,
-    "longitude": 79.088200
-  },
-  {
-    "code": "IXB",
-    "name": "Bagdogra Airport",
-    "city": "Siliguri",
-    "latitude": 26.681200,
-    "longitude": 88.328600
-  },
-  {
-    "code": "NJP",
-    "name": "New Jalpaiguri Junction Railway Station",
-    "city": "Siliguri",
-    "latitude": 26.708100,
-    "longitude": 88.358800
-  },
-  {
-    "code": "GAU",
-    "name": "Lokpriya Gopinath Bordoloi International Airport",
-    "city": "Guwahati",
-    "latitude": 26.106100,
-    "longitude": 91.585900
-  },
-  {
-    "code": "GHY",
-    "name": "Guwahati Railway Station",
-    "city": "Guwahati",
-    "latitude": 26.182000,
-    "longitude": 91.744000
-  },
-  {
-    "code": "GOI",
-    "name": "Dabolim International Airport",
-    "city": "Goa",
-    "latitude": 15.380800,
-    "longitude": 73.831400
-  },
-  {
-    "code": "MAO",
-    "name": "Madgaon Junction Railway Station",
-    "city": "Goa",
-    "latitude": 15.270500,
-    "longitude": 73.972300
-  },
-  {
-    "code": "BPL",
-    "name": "Bhopal Junction Railway Station",
-    "city": "Bhopal",
-    "latitude": 23.267800,
-    "longitude": 77.412400
-  },
-  {
-    "code": "RKMP",
-    "name": "Rani Kamlapati Railway Station",
-    "city": "Bhopal",
-    "latitude": 23.206400,
-    "longitude": 77.439800
-  },
-  {
-    "code": "IDR",
-    "name": "Devi Ahilya Bai Holkar Airport",
-    "city": "Indore",
-    "latitude": 22.721700,
-    "longitude": 75.801100
-  },
-  {
-    "code": "INDB",
-    "name": "Indore Junction Railway Station",
-    "city": "Indore",
-    "latitude": 22.717700,
-    "longitude": 75.868200
-  },
-  {
-    "code": "IXC",
-    "name": "Shaheed Bhagat Singh International Airport",
-    "city": "Chandigarh",
-    "latitude": 30.673500,
-    "longitude": 76.788500
-  },
-  {
-    "code": "CDG",
-    "name": "Chandigarh Junction Railway Station",
-    "city": "Chandigarh",
-    "latitude": 30.702200,
-    "longitude": 76.822300
-  },
-  {
-    "code": "ATQ",
-    "name": "Sri Guru Ram Dass Jee International Airport",
-    "city": "Amritsar",
-    "latitude": 31.709600,
-    "longitude": 74.797300
-  },
-  {
-    "code": "ASR",
-    "name": "Amritsar Junction Railway Station",
-    "city": "Amritsar",
-    "latitude": 31.634000,
-    "longitude": 74.865600
-  },
-  {
-    "code": "BBI",
-    "name": "Biju Patnaik International Airport",
-    "city": "Bhubaneswar",
-    "latitude": 20.244400,
-    "longitude": 85.817800
-  },
-  {
-    "code": "BBS",
-    "name": "Bhubaneswar Railway Station",
-    "city": "Bhubaneswar",
-    "latitude": 20.266600,
-    "longitude": 85.843600
+    "code": "CCU_METRO",
+    "name": "Kolkata Metro Green Line Interchange",
+    "city": "Kolkata",
+    "latitude": 22.584000,
+    "longitude": 88.343000
   }
 ]

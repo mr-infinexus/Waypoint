@@ -16,9 +16,7 @@ export class ServiceCatalogService {
     destinationStationId: string,
     departureTime: Date,
     arrivalTime: Date,
-    price: number,
-    seatCapacity: number,
-    vehicleLogo?: string
+    price: number
   ) {
     const originStation = await this.stationRepository.findOneBy({ id: originStationId });
     const destinationStation = await this.stationRepository.findOneBy({ id: destinationStationId });
@@ -40,10 +38,7 @@ export class ServiceCatalogService {
       destinationStation,
       departureTime,
       arrivalTime,
-      price,
-      seatCapacity,
-      availableSeats: seatCapacity,
-      vehicleLogo
+      price
     });
 
     return await this.serviceRepository.save(service);
@@ -62,6 +57,10 @@ export class ServiceCatalogService {
     if (!service) throw new NotFoundError('Service not found');
     if (service.operator.id !== operatorId) {
       throw new ForbiddenError('You can only edit your own services');
+    }
+
+    if (updates.isCancelled === true) {
+      throw new ForbiddenError('Use the cancellation endpoint to cancel services');
     }
 
     Object.assign(service, updates);

@@ -44,9 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     try {
       await api('/auth/logout', { method: 'POST' });
-    } catch {
-      // Ignore
-    }
+    } catch {}
     setToken(null);
   };
 

@@ -15,7 +15,7 @@ export class ItinerarySegment {
   service: Service;
 
   @Column({ type: 'int' })
-  segmentOrder: number; // 0 for the first leg, 1 for the second, etc.
+  segmentOrder: number;
 
   @OneToMany(() => Ticket, (ticket) => ticket.itinerarySegment, { cascade: true })
   tickets: Ticket[];

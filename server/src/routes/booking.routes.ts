@@ -6,11 +6,12 @@ import { UserRole } from '../entities/User';
 
 const router = Router();
 
-// Protect booking routes: only TRAVELER can book (maybe Admin/Operator can too, but let's stick to TRAVELER)
-// Actually, let's just authenticateJWT. Any user could technically book a trip. Let's allow everyone or TRAVELER.
 router.use(authenticateJWT, requireRole([UserRole.TRAVELER]));
 
 router.post('/', BookingController.createBooking);
+router.get('/events', BookingController.streamDisruptions);
 router.get('/my', BookingController.getMyBookings);
+router.get('/my/:id', BookingController.getBookingById);
+router.post('/my/:id/accept-alternative', BookingController.acceptAlternative);
 
 export default router;

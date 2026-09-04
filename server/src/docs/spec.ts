@@ -655,327 +655,416 @@ export const openApiSpec = {
             }
           }
         }
-      },
-      post: {
-        summary: 'Onboard a new operator',
-        description: 'Creates a new operator account with credentials to publish and manage transit schedules.',
-        tags: ['Admin Management'],
-        security: [{ BearerAuth: [] }, { CookieAuth: [] }],
-        requestBody: {
-          required: true,
-          content: {
-            'application/json': {
-              schema: {
-                $ref: '#/components/schemas/OnboardOperatorRequest'
-              }
-            }
-          }
-        },
-        responses: {
-          '201': {
-            description: 'Operator created successfully',
-            content: {
-              'application/json': {
-                schema: {
-                  $ref: '#/components/schemas/User'
-                }
-              }
-            }
-          },
-          '400': {
-            $ref: '#/components/responses/400BadRequest'
-          },
-          '401': {
-            $ref: '#/components/responses/401Unauthorized'
-          },
-          '403': {
-            $ref: '#/components/responses/403Forbidden'
-          }
-        }
       }
     },
     '/admin/operators/{id}/suspend': {
-      post: {
-        summary: 'Suspend an operator account',
-        description: 'Deactivates an operator profile, revoking access to schedule management.',
-        tags: ['Admin Management'],
-        security: [{ BearerAuth: [] }, { CookieAuth: [] }],
-        parameters: [
-          {
-            name: 'id',
-            in: 'path',
-            required: true,
-            schema: {
-              type: 'string',
-              format: 'uuid'
+        post: {
+          summary: 'Suspend an operator account',
+          description: 'Deactivates an operator profile, revoking access to schedule management.',
+          tags: ['Admin Management'],
+          security: [{ BearerAuth: [] }, { CookieAuth: [] }],
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: {
+                type: 'string',
+                format: 'uuid'
+              }
+            }
+          ],
+          responses: {
+            '200': {
+              description: 'Operator suspended',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      message: { type: 'string', example: 'Operator access revoked successfully' }
+                    }
+                  }
+                }
+              }
+            },
+            '401': {
+              $ref: '#/components/responses/401Unauthorized'
+            },
+            '403': {
+              $ref: '#/components/responses/403Forbidden'
             }
           }
-        ],
-        responses: {
-          '200': {
-            description: 'Operator suspended',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    message: { type: 'string', example: 'Operator suspended successfully' }
+        }
+      },
+      '/admin/operators/{id}/activate': {
+        post: {
+          summary: 'Grant access to an operator account',
+          description: 'Activates an operator profile, granting access to schedule management.',
+          tags: ['Admin Management'],
+          security: [{ BearerAuth: [] }, { CookieAuth: [] }],
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: {
+                type: 'string',
+                format: 'uuid'
+              }
+            }
+          ],
+          responses: {
+            '200': {
+              description: 'Operator activated',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      message: { type: 'string', example: 'Operator access granted successfully' }
+                    }
+                  }
+                }
+              }
+            },
+            '401': {
+              $ref: '#/components/responses/401Unauthorized'
+            },
+            '403': {
+              $ref: '#/components/responses/403Forbidden'
+            }
+          }
+        }
+      },
+      '/admin/users': {
+        get: {
+          summary: 'List all registered travelers',
+          description: 'Retrieves all traveler users registered on the platform.',
+          tags: ['Admin Management'],
+          security: [{ BearerAuth: [] }, { CookieAuth: [] }],
+          responses: {
+            '200': {
+              description: 'List of travelers',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'array',
+                    items: {
+                      $ref: '#/components/schemas/User'
+                    }
                   }
                 }
               }
             }
-          },
-          '401': {
-            $ref: '#/components/responses/401Unauthorized'
-          },
-          '403': {
-            $ref: '#/components/responses/403Forbidden'
+          }
+        }
+      },
+      '/admin/users/{id}/suspend': {
+        post: {
+          summary: 'Suspend a traveler account',
+          description: 'Deactivates a traveler profile, revoking access to bookings and searches.',
+          tags: ['Admin Management'],
+          security: [{ BearerAuth: [] }, { CookieAuth: [] }],
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: {
+                type: 'string',
+                format: 'uuid'
+              }
+            }
+          ],
+          responses: {
+            '200': {
+              description: 'User suspended',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      message: { type: 'string', example: 'User access revoked successfully' }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      '/admin/users/{id}/activate': {
+        post: {
+          summary: 'Grant access to a traveler account',
+          description: 'Re-activates a traveler profile.',
+          tags: ['Admin Management'],
+          security: [{ BearerAuth: [] }, { CookieAuth: [] }],
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: {
+                type: 'string',
+                format: 'uuid'
+              }
+            }
+          ],
+          responses: {
+            '200': {
+              description: 'User activated',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      message: { type: 'string', example: 'User access granted successfully' }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    components: {
+      securitySchemes: {
+        BearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description: 'Standard JSON Web Token passed in Authorization header: Bearer <token>'
+        },
+        CookieAuth: {
+          type: 'apiKey',
+          in: 'cookie',
+          name: 'jwt',
+          description: 'HttpOnly authentication cookie containing the JWT session token'
+        }
+      },
+      schemas: {
+        RegisterRequest: {
+          type: 'object',
+          required: ['name', 'email', 'password'],
+          properties: {
+            name: { type: 'string', example: 'Aarav Patel' },
+            email: { type: 'string', format: 'email', example: 'aarav@gmail.com' },
+            password: { type: 'string', format: 'password', example: 'Password123!' }
+          }
+        },
+        LoginRequest: {
+          type: 'object',
+          required: ['email', 'password'],
+          properties: {
+            email: { type: 'string', format: 'email', example: 'admin@waypoint.com' },
+            password: { type: 'string', format: 'password', example: 'Password123!' }
+          }
+        },
+        AuthResponse: {
+          type: 'object',
+          properties: {
+            message: { type: 'string', example: 'Login successful' },
+            token: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' },
+            user: { $ref: '#/components/schemas/User' }
+          }
+        },
+        User: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            name: { type: 'string', example: 'Aarav Patel' },
+            email: { type: 'string', format: 'email', example: 'aarav@gmail.com' },
+            role: { type: 'string', enum: ['admin', 'operator', 'traveler'], example: 'traveler' },
+            isActive: { type: 'boolean', example: true },
+            createdAt: { type: 'string', format: 'date-time' }
+          }
+        },
+        Station: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            code: { type: 'string', example: 'DEL' },
+            name: { type: 'string', example: 'Indira Gandhi International Airport' },
+            city: { type: 'string', example: 'New Delhi' },
+            latitude: { type: 'number', example: 28.5562 },
+            longitude: { type: 'number', example: 77.1000 }
+          }
+        },
+        CreateStationRequest: {
+          type: 'object',
+          required: ['code', 'name', 'city'],
+          properties: {
+            code: { type: 'string', example: 'BOM' },
+            name: { type: 'string', example: 'Chhatrapati Shivaji Maharaj International Airport' },
+            city: { type: 'string', example: 'Mumbai' },
+            latitude: { type: 'number', example: 19.0896 },
+            longitude: { type: 'number', example: 72.8656 }
+          }
+        },
+        Service: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            type: { type: 'string', enum: ['flight', 'train', 'bus', 'metro', 'walk'], example: 'flight' },
+            serviceNumber: { type: 'string', example: '6E-501' },
+            originStation: { $ref: '#/components/schemas/Station' },
+            destinationStation: { $ref: '#/components/schemas/Station' },
+            departureTime: { type: 'string', format: 'date-time' },
+            arrivalTime: { type: 'string', format: 'date-time' },
+            price: { type: 'number', example: 4500.0 },
+            isDelayed: { type: 'boolean', example: false },
+            isCancelled: { type: 'boolean', example: false }
+          }
+        },
+        CreateServiceRequest: {
+          type: 'object',
+          required: ['type', 'serviceNumber', 'originStationId', 'destinationStationId', 'departureTime', 'arrivalTime', 'price'],
+          properties: {
+            type: { type: 'string', enum: ['flight', 'train', 'bus', 'metro', 'walk'], example: 'train' },
+            serviceNumber: { type: 'string', example: 'TR-12001' },
+            originStationId: { type: 'string', format: 'uuid' },
+            destinationStationId: { type: 'string', format: 'uuid' },
+            departureTime: { type: 'string', format: 'date-time' },
+            arrivalTime: { type: 'string', format: 'date-time' },
+            price: { type: 'number', example: 1200.0 }
+          }
+        },
+        WalkLeg: {
+          type: 'object',
+          properties: {
+            distanceKm: { type: 'number', example: 1.2 },
+            durationMinutes: { type: 'integer', example: 16 },
+            toStationId: { type: 'string', format: 'uuid' },
+            fromStationId: { type: 'string', format: 'uuid' }
+          }
+        },
+        SearchResultPath: {
+          type: 'object',
+          properties: {
+            services: {
+              type: 'array',
+              items: { $ref: '#/components/schemas/Service' }
+            },
+            totalPrice: { type: 'number', example: 5700.0 },
+            totalDurationMs: { type: 'integer', example: 18000000 },
+            totalDisplayDurationMs: { type: 'integer', example: 19800000 },
+            transfers: { type: 'integer', example: 1 },
+            originWalk: {
+              anyOf: [{ $ref: '#/components/schemas/WalkLeg' }, { type: 'null' }]
+            },
+            destinationWalk: {
+              anyOf: [{ $ref: '#/components/schemas/WalkLeg' }, { type: 'null' }]
+            }
+          }
+        },
+        Itinerary: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            totalCost: { type: 'number', example: 5700.0 },
+            status: { type: 'string', enum: ['active', 'disrupted', 'completed', 'cancelled'], example: 'active' },
+            originWalk: {
+              anyOf: [{ $ref: '#/components/schemas/WalkLeg' }, { type: 'null' }]
+            },
+            destinationWalk: {
+              anyOf: [{ $ref: '#/components/schemas/WalkLeg' }, { type: 'null' }]
+            },
+            segments: {
+              type: 'array',
+              items: { $ref: '#/components/schemas/ItinerarySegment' }
+            },
+            createdAt: { type: 'string', format: 'date-time' }
+          }
+        },
+        ItinerarySegment: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            segmentOrder: { type: 'integer', example: 1 },
+            service: { $ref: '#/components/schemas/Service' },
+            tickets: {
+              type: 'array',
+              items: { $ref: '#/components/schemas/Ticket' }
+            }
+          }
+        },
+        Ticket: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            status: { type: 'string', enum: ['valid', 'cancelled'], example: 'valid' },
+            qrCode: { type: 'string', example: 'wp-ticket-3f1b4a8e-28c0-4217-bf28-b9a35e8841ad' }
+          }
+        },
+        DisruptionEvent: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            type: { type: 'string', enum: ['delay', 'cancellation'], example: 'delay' },
+            description: { type: 'string', example: 'Technical delay due to runway maintenance' },
+            createdAt: { type: 'string', format: 'date-time' }
+          }
+        },
+        AdminStats: {
+          type: 'object',
+          properties: {
+            totalOperators: { type: 'integer', example: 12 },
+            activeItineraries: { type: 'integer', example: 145 },
+            disruptedItineraries: { type: 'integer', example: 3 }
+          }
+        },
+        OnboardOperatorRequest: {
+          type: 'object',
+          required: ['name', 'email', 'password'],
+          properties: {
+            name: { type: 'string', example: 'IndiGo Airlines' },
+            email: { type: 'string', format: 'email', example: 'ops@goindigo.in' },
+            password: { type: 'string', format: 'password', example: 'IndiGoSecurePass1!' }
+          }
+        },
+        ErrorResponse: {
+          type: 'object',
+          properties: {
+            status: { type: 'string', example: 'error' },
+            message: { type: 'string', example: 'Invalid request parameter or unauthorized operation' }
+          }
+        }
+      },
+      responses: {
+        '400BadRequest': {
+          description: 'Bad Request - Validation or parameter error',
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+            }
+          }
+        },
+        '401Unauthorized': {
+          description: 'Unauthorized - Missing or invalid JWT credentials',
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+            }
+          }
+        },
+        '403Forbidden': {
+          description: 'Forbidden - Insufficient role permissions',
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+            }
+          }
+        },
+        '404NotFound': {
+          description: 'Resource not found',
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+            }
           }
         }
       }
     }
-  },
-  components: {
-    securitySchemes: {
-      BearerAuth: {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-        description: 'Standard JSON Web Token passed in Authorization header: Bearer <token>'
-      },
-      CookieAuth: {
-        type: 'apiKey',
-        in: 'cookie',
-        name: 'jwt',
-        description: 'HttpOnly authentication cookie containing the JWT session token'
-      }
-    },
-    schemas: {
-      RegisterRequest: {
-        type: 'object',
-        required: ['name', 'email', 'password'],
-        properties: {
-          name: { type: 'string', example: 'Aarav Patel' },
-          email: { type: 'string', format: 'email', example: 'aarav@gmail.com' },
-          password: { type: 'string', format: 'password', example: 'Password123!' }
-        }
-      },
-      LoginRequest: {
-        type: 'object',
-        required: ['email', 'password'],
-        properties: {
-          email: { type: 'string', format: 'email', example: 'admin@waypoint.com' },
-          password: { type: 'string', format: 'password', example: 'Password123!' }
-        }
-      },
-      AuthResponse: {
-        type: 'object',
-        properties: {
-          message: { type: 'string', example: 'Login successful' },
-          token: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' },
-          user: { $ref: '#/components/schemas/User' }
-        }
-      },
-      User: {
-        type: 'object',
-        properties: {
-          id: { type: 'string', format: 'uuid' },
-          name: { type: 'string', example: 'Aarav Patel' },
-          email: { type: 'string', format: 'email', example: 'aarav@gmail.com' },
-          role: { type: 'string', enum: ['admin', 'operator', 'traveler'], example: 'traveler' },
-          isActive: { type: 'boolean', example: true },
-          createdAt: { type: 'string', format: 'date-time' }
-        }
-      },
-      Station: {
-        type: 'object',
-        properties: {
-          id: { type: 'string', format: 'uuid' },
-          code: { type: 'string', example: 'DEL' },
-          name: { type: 'string', example: 'Indira Gandhi International Airport' },
-          city: { type: 'string', example: 'New Delhi' },
-          latitude: { type: 'number', example: 28.5562 },
-          longitude: { type: 'number', example: 77.1000 }
-        }
-      },
-      CreateStationRequest: {
-        type: 'object',
-        required: ['code', 'name', 'city'],
-        properties: {
-          code: { type: 'string', example: 'BOM' },
-          name: { type: 'string', example: 'Chhatrapati Shivaji Maharaj International Airport' },
-          city: { type: 'string', example: 'Mumbai' },
-          latitude: { type: 'number', example: 19.0896 },
-          longitude: { type: 'number', example: 72.8656 }
-        }
-      },
-      Service: {
-        type: 'object',
-        properties: {
-          id: { type: 'string', format: 'uuid' },
-          type: { type: 'string', enum: ['flight', 'train', 'bus', 'metro', 'walk'], example: 'flight' },
-          serviceNumber: { type: 'string', example: '6E-501' },
-          originStation: { $ref: '#/components/schemas/Station' },
-          destinationStation: { $ref: '#/components/schemas/Station' },
-          departureTime: { type: 'string', format: 'date-time' },
-          arrivalTime: { type: 'string', format: 'date-time' },
-          price: { type: 'number', example: 4500.0 },
-          seatCapacity: { type: 'integer', example: 180 },
-          availableSeats: { type: 'integer', example: 175 },
-          vehicleLogo: { type: 'string', example: 'indigo' },
-          isDelayed: { type: 'boolean', example: false },
-          isCancelled: { type: 'boolean', example: false }
-        }
-      },
-      CreateServiceRequest: {
-        type: 'object',
-        required: ['type', 'serviceNumber', 'originStationId', 'destinationStationId', 'departureTime', 'arrivalTime', 'price', 'seatCapacity'],
-        properties: {
-          type: { type: 'string', enum: ['flight', 'train', 'bus', 'metro', 'walk'], example: 'train' },
-          serviceNumber: { type: 'string', example: 'TR-12001' },
-          originStationId: { type: 'string', format: 'uuid' },
-          destinationStationId: { type: 'string', format: 'uuid' },
-          departureTime: { type: 'string', format: 'date-time' },
-          arrivalTime: { type: 'string', format: 'date-time' },
-          price: { type: 'number', example: 1200.0 },
-          seatCapacity: { type: 'integer', example: 400 },
-          vehicleLogo: { type: 'string', example: 'train' }
-        }
-      },
-      WalkLeg: {
-        type: 'object',
-        properties: {
-          distanceKm: { type: 'number', example: 1.2 },
-          durationMinutes: { type: 'integer', example: 16 },
-          toStationId: { type: 'string', format: 'uuid' },
-          fromStationId: { type: 'string', format: 'uuid' }
-        }
-      },
-      SearchResultPath: {
-        type: 'object',
-        properties: {
-          services: {
-            type: 'array',
-            items: { $ref: '#/components/schemas/Service' }
-          },
-          totalPrice: { type: 'number', example: 5700.0 },
-          totalDurationMs: { type: 'integer', example: 18000000 },
-          totalDisplayDurationMs: { type: 'integer', example: 19800000 },
-          transfers: { type: 'integer', example: 1 },
-          originWalk: {
-            anyOf: [{ $ref: '#/components/schemas/WalkLeg' }, { type: 'null' }]
-          },
-          destinationWalk: {
-            anyOf: [{ $ref: '#/components/schemas/WalkLeg' }, { type: 'null' }]
-          }
-        }
-      },
-      Itinerary: {
-        type: 'object',
-        properties: {
-          id: { type: 'string', format: 'uuid' },
-          totalCost: { type: 'number', example: 5700.0 },
-          status: { type: 'string', enum: ['active', 'disrupted', 'completed', 'cancelled'], example: 'active' },
-          originWalk: {
-            anyOf: [{ $ref: '#/components/schemas/WalkLeg' }, { type: 'null' }]
-          },
-          destinationWalk: {
-            anyOf: [{ $ref: '#/components/schemas/WalkLeg' }, { type: 'null' }]
-          },
-          segments: {
-            type: 'array',
-            items: { $ref: '#/components/schemas/ItinerarySegment' }
-          },
-          createdAt: { type: 'string', format: 'date-time' }
-        }
-      },
-      ItinerarySegment: {
-        type: 'object',
-        properties: {
-          id: { type: 'string', format: 'uuid' },
-          segmentOrder: { type: 'integer', example: 1 },
-          service: { $ref: '#/components/schemas/Service' },
-          tickets: {
-            type: 'array',
-            items: { $ref: '#/components/schemas/Ticket' }
-          }
-        }
-      },
-      Ticket: {
-        type: 'object',
-        properties: {
-          id: { type: 'string', format: 'uuid' },
-          status: { type: 'string', enum: ['valid', 'cancelled'], example: 'valid' },
-          qrCode: { type: 'string', example: 'wp-ticket-3f1b4a8e-28c0-4217-bf28-b9a35e8841ad' }
-        }
-      },
-      DisruptionEvent: {
-        type: 'object',
-        properties: {
-          id: { type: 'string', format: 'uuid' },
-          type: { type: 'string', enum: ['delay', 'cancellation'], example: 'delay' },
-          description: { type: 'string', example: 'Technical delay due to runway maintenance' },
-          createdAt: { type: 'string', format: 'date-time' }
-        }
-      },
-      AdminStats: {
-        type: 'object',
-        properties: {
-          totalOperators: { type: 'integer', example: 12 },
-          activeItineraries: { type: 'integer', example: 145 },
-          disruptedItineraries: { type: 'integer', example: 3 }
-        }
-      },
-      OnboardOperatorRequest: {
-        type: 'object',
-        required: ['name', 'email', 'password'],
-        properties: {
-          name: { type: 'string', example: 'IndiGo Airlines' },
-          email: { type: 'string', format: 'email', example: 'ops@goindigo.in' },
-          password: { type: 'string', format: 'password', example: 'IndiGoSecurePass1!' }
-        }
-      },
-      ErrorResponse: {
-        type: 'object',
-        properties: {
-          status: { type: 'string', example: 'error' },
-          message: { type: 'string', example: 'Invalid request parameter or unauthorized operation' }
-        }
-      }
-    },
-    responses: {
-      '400BadRequest': {
-        description: 'Bad Request - Validation or parameter error',
-        content: {
-          'application/json': {
-            schema: { $ref: '#/components/schemas/ErrorResponse' }
-          }
-        }
-      },
-      '401Unauthorized': {
-        description: 'Unauthorized - Missing or invalid JWT credentials',
-        content: {
-          'application/json': {
-            schema: { $ref: '#/components/schemas/ErrorResponse' }
-          }
-        }
-      },
-      '403Forbidden': {
-        description: 'Forbidden - Insufficient role permissions',
-        content: {
-          'application/json': {
-            schema: { $ref: '#/components/schemas/ErrorResponse' }
-          }
-        }
-      },
-      '404NotFound': {
-        description: 'Resource not found',
-        content: {
-          'application/json': {
-            schema: { $ref: '#/components/schemas/ErrorResponse' }
-          }
-        }
-      }
-    }
-  }
-};
+  };

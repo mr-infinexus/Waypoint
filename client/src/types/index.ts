@@ -34,9 +34,6 @@ export interface Service {
   departureTime: string;
   arrivalTime: string;
   price: number;
-  seatCapacity: number;
-  availableSeats?: number;
-  vehicleLogo?: string;
   isDelayed: boolean;
   isCancelled: boolean;
 }
@@ -77,6 +74,7 @@ export interface Itinerary {
   status: ItineraryStatus;
   originWalk: WalkLeg | null;
   destinationWalk: WalkLeg | null;
+  pendingAlternatives: SearchResultPath[] | null;
   segments: ItinerarySegment[];
   createdAt: string;
   traveler?: {

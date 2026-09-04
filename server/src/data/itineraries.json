@@ -3,9 +3,16 @@
     "travelerEmail": "aarav@gmail.com",
     "status": "active",
     "serviceNumbers": [
-      "METRO-AEX-101",
-      "TR-12952",
-      "MUM-L3-202"
+      "METRO-DEL-AIR-03",
+      "TR-12952"
+    ],
+    "ticketStatus": "valid"
+  },
+  {
+    "travelerEmail": "aarav@gmail.com",
+    "status": "active",
+    "serviceNumbers": [
+      "TR-12301"
     ],
     "ticketStatus": "valid"
   },
@@ -13,8 +20,17 @@
     "travelerEmail": "ananya@gmail.com",
     "status": "disrupted",
     "serviceNumbers": [
-      "6E-501",
-      "6E-344"
+      "6E-201",
+      "AI-605"
+    ],
+    "ticketStatus": "valid"
+  },
+  {
+    "travelerEmail": "ananya@gmail.com",
+    "status": "active",
+    "serviceNumbers": [
+      "6E-331",
+      "BUS-CCU-AIR-01"
     ],
     "ticketStatus": "valid"
   },
@@ -22,9 +38,7 @@
     "travelerEmail": "rohan@gmail.com",
     "status": "completed",
     "serviceNumbers": [
-      "BMTC-PURPLE-01",
-      "TR-VANDE-BLR-MAS",
-      "CMRL-AP-01"
+      "TR-20608"
     ],
     "ticketStatus": "valid"
   },
@@ -32,9 +46,8 @@
     "travelerEmail": "priya@gmail.com",
     "status": "active",
     "serviceNumbers": [
-      "MUM-L2-101",
-      "TR-VANDE-BOM-ADI",
-      "BRTS-AMD-01"
+      "TR-20606",
+      "METRO-MAA-02"
     ],
     "ticketStatus": "valid"
   }

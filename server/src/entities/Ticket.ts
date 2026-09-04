@@ -22,7 +22,7 @@ export class Ticket {
   status: TicketStatus;
 
   @Column({ nullable: true })
-  qrCode: string; // E.g. base64 string or URL
+  qrCode: string;
 
   @CreateDateColumn()
   createdAt: Date;

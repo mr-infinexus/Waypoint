@@ -8,15 +8,23 @@ export class AuthController {
   static async register(req: Request, res: Response, next: NextFunction) {
     try {
       const { name, email, password, role } = req.body;
-      const token = await authService.register(name, email, password, role as UserRole);
-      
-      res.cookie('jwt', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 24 * 60 * 60 * 1000,
-      });
+      const result = await authService.register(name, email, password, role as UserRole);
 
-      res.status(201).json({ message: 'User registered successfully', token });
+      if (result.token) {
+        res.cookie('jwt', result.token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          maxAge: 24 * 60 * 60 * 1000,
+        });
+      }
+
+      res.status(201).json({
+        message: result.pendingApproval
+          ? 'Operator registered successfully. Your account is pending administrator approval.'
+          : 'User registered successfully',
+        token: result.token,
+        pendingApproval: result.pendingApproval,
+      });
     } catch (error) {
       next(error);
     }
@@ -26,7 +34,7 @@ export class AuthController {
     try {
       const { email, password } = req.body;
       const token = await authService.login(email, password);
-      
+
       res.cookie('jwt', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',

@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { api } from '@/services/api';
 import type { Service, Station, ServiceType } from '@/types';
 import { Button } from '@/components/ui/button';
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationEllipsis } from '@/components/ui/pagination';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
@@ -59,15 +60,12 @@ export function OperatorDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Modals state
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [creating, setCreating] = useState(false);
   const [createErrors, setCreateErrors] = useState<Record<string, string>>({});
 
-  // Action states
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
 
-  // Delay Dialog State
   const [delayDialog, setDelayDialog] = useState<{
     isOpen: boolean;
     service: Service | null;
@@ -82,21 +80,21 @@ export function OperatorDashboard() {
     customDescription: '',
   });
 
-  // Cancel Dialog State
   const [cancelDialog, setCancelDialog] = useState<{
     isOpen: boolean;
     service: Service | null;
+    reason: string;
   }>({
     isOpen: false,
     service: null,
+    reason: '',
   });
 
-  // Search and Filter State
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'on-time' | 'delayed' | 'cancelled'>('all');
-  const [modeFilter, setModeFilter] = useState<'all' | ServiceType>('all');
+  const [page, setPage] = useState(1);
+  const ITEMS_PER_PAGE = 5;
 
-  // Form State for creating service
   const [formData, setFormData] = useState({
     type: 'train' as ServiceType,
     serviceNumber: '',
@@ -105,7 +103,6 @@ export function OperatorDashboard() {
     departureTime: '',
     arrivalTime: '',
     price: '',
-    seatCapacity: '120',
   });
 
   const fetchServices = async (showLoading = false) => {
@@ -152,7 +149,6 @@ export function OperatorDashboard() {
     };
   }, []);
 
-  // Open Delay Dialog
   const openDelayDialog = (service: Service) => {
     setDelayDialog({
       isOpen: true,
@@ -163,7 +159,6 @@ export function OperatorDashboard() {
     });
   };
 
-  // Submit Delay
   const handleConfirmDelay = async () => {
     if (!delayDialog.service) return;
     const { service, minutes, reason, customDescription } = delayDialog;
@@ -203,32 +198,32 @@ export function OperatorDashboard() {
     }
   };
 
-  // Open Cancel Dialog
   const openCancelDialog = (service: Service) => {
     setCancelDialog({
       isOpen: true,
       service,
+      reason: '',
     });
   };
 
-  // Submit Cancel
   const handleConfirmCancel = async () => {
     if (!cancelDialog.service) return;
     const { service } = cancelDialog;
+    const reason = cancelDialog.reason?.trim();
 
     setActionLoadingId(service.id);
     try {
-      await api(`/services/${service.id}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ isCancelled: true }),
+      await api(`/services/${service.id}/disruptions/cancel`, {
+        method: 'POST',
+        body: JSON.stringify({ description: reason || undefined }),
       });
 
       toast.success(
         `Service ${service.serviceNumber} cancelled`,
-        { description: 'Passengers flagged for cascade re-routing.' }
+        { description: 'Affected passengers alerted and shown re-route options.' }
       );
 
-      setCancelDialog({ isOpen: false, service: null });
+      setCancelDialog({ isOpen: false, service: null, reason: '' });
       await fetchServices(false);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Cancellation failed';
@@ -238,7 +233,6 @@ export function OperatorDashboard() {
     }
   };
 
-  // Create Service with complete validation guardrails
   const handleCreateService = async (e: React.SubmitEvent) => {
     e.preventDefault();
     const errors: Record<string, string> = {};
@@ -276,11 +270,6 @@ export function OperatorDashboard() {
       errors.price = 'Must be positive.';
     }
 
-    const capacityNum = parseInt(formData.seatCapacity, 10);
-    if (isNaN(capacityNum) || capacityNum <= 0) {
-      errors.seatCapacity = 'Min 1.';
-    }
-
     if (Object.keys(errors).length > 0) {
       setCreateErrors(errors);
       toast.error('Resolve form errors.');
@@ -301,7 +290,6 @@ export function OperatorDashboard() {
           departureTime: new Date(formData.departureTime).toISOString(),
           arrivalTime: new Date(formData.arrivalTime).toISOString(),
           price: priceNum,
-          seatCapacity: capacityNum,
         }),
       });
 
@@ -315,7 +303,6 @@ export function OperatorDashboard() {
         departureTime: '',
         arrivalTime: '',
         price: '',
-        seatCapacity: '120',
       });
       await fetchServices(false);
     } catch (err: unknown) {
@@ -326,10 +313,13 @@ export function OperatorDashboard() {
     }
   };
 
-  // Filtered Services Computation
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery, statusFilter]);
+
   const filteredServices = useMemo(() => {
     return services.filter((service) => {
-      // Search filter
+
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase().trim();
         const matchesNumber = service.serviceNumber.toLowerCase().includes(query);
@@ -343,19 +333,19 @@ export function OperatorDashboard() {
         }
       }
 
-      // Status filter
       if (statusFilter === 'cancelled' && !service.isCancelled) return false;
       if (statusFilter === 'delayed' && (!service.isDelayed || service.isCancelled)) return false;
       if (statusFilter === 'on-time' && (service.isDelayed || service.isCancelled)) return false;
 
-      // Mode filter
-      if (modeFilter !== 'all' && service.type !== modeFilter) return false;
-
       return true;
     });
-  }, [services, searchQuery, statusFilter, modeFilter]);
+  }, [services, searchQuery, statusFilter]);
 
-  // Counts for tabs
+  const totalPages = Math.max(1, Math.ceil(filteredServices.length / ITEMS_PER_PAGE));
+  const paginatedServices = useMemo(() => {
+    return filteredServices.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+  }, [filteredServices, page]);
+
   const counts = useMemo(() => {
     let onTime = 0;
     let delayed = 0;
@@ -386,7 +376,7 @@ export function OperatorDashboard() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-4">
-      {/* Header */}
+
       <div className="flex items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold tracking-tight text-foreground">Operator Services</h1>
@@ -413,7 +403,7 @@ export function OperatorDashboard() {
 
               <form onSubmit={handleCreateService} className="space-y-4 mt-2">
                 <div className="grid grid-cols-2 gap-3">
-                  {/* Mode */}
+
                   <div className="space-y-1">
                     <label className="text-sm text-muted-foreground font-medium">Mode</label>
                     <Select
@@ -432,7 +422,6 @@ export function OperatorDashboard() {
                     </Select>
                   </div>
 
-                  {/* Service Number */}
                   <div className="space-y-1">
                     <label className="text-sm text-muted-foreground font-medium">Service Number</label>
                     <Input
@@ -451,7 +440,6 @@ export function OperatorDashboard() {
                     )}
                   </div>
 
-                  {/* Origin */}
                   <div className="space-y-1">
                     <label className="text-sm text-muted-foreground font-medium">Origin</label>
                     <Select
@@ -478,7 +466,6 @@ export function OperatorDashboard() {
                     )}
                   </div>
 
-                  {/* Destination */}
                   <div className="space-y-1">
                     <label className="text-sm text-muted-foreground font-medium">Destination</label>
                     <Select
@@ -505,7 +492,6 @@ export function OperatorDashboard() {
                     )}
                   </div>
 
-                  {/* Departure Time */}
                   <div className="space-y-1">
                     <label className="text-sm text-muted-foreground font-medium">Departure</label>
                     <Input
@@ -524,7 +510,6 @@ export function OperatorDashboard() {
                     )}
                   </div>
 
-                  {/* Arrival Time */}
                   <div className="space-y-1">
                     <label className="text-sm text-muted-foreground font-medium">Arrival</label>
                     <Input
@@ -543,8 +528,7 @@ export function OperatorDashboard() {
                     )}
                   </div>
 
-                  {/* Price */}
-                  <div className="space-y-1">
+                  <div className="col-span-1 space-y-1">
                     <label className="text-sm text-muted-foreground font-medium">Price (₹)</label>
                     <Input
                       required
@@ -562,27 +546,6 @@ export function OperatorDashboard() {
                     />
                     {createErrors.price && (
                       <p className="text-[10px] text-destructive">{createErrors.price}</p>
-                    )}
-                  </div>
-
-                  {/* Seat Capacity */}
-                  <div className="space-y-1">
-                    <label className="text-sm text-muted-foreground font-medium">Seats</label>
-                    <Input
-                      required
-                      type="number"
-                      min="1"
-                      placeholder="120"
-                      value={formData.seatCapacity}
-                      onChange={(e) => {
-                        setFormData({ ...formData, seatCapacity: e.target.value });
-                        if (createErrors.seatCapacity) setCreateErrors((prev) => ({ ...prev, seatCapacity: '' }));
-                      }}
-                      className={`h-8 bg-background/50 rounded-lg text-sm ${createErrors.seatCapacity ? 'border-destructive' : 'border-border/70'
-                        }`}
-                    />
-                    {createErrors.seatCapacity && (
-                      <p className="text-[10px] text-destructive">{createErrors.seatCapacity}</p>
                     )}
                   </div>
                 </div>
@@ -607,7 +570,6 @@ export function OperatorDashboard() {
         </div>
       </div>
 
-      {/* Global Error */}
       {error && (
         <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive flex items-center justify-between text-sm">
           <div className="flex items-center gap-2">
@@ -620,13 +582,12 @@ export function OperatorDashboard() {
         </div>
       )}
 
-      {/* Unified Filter Strip */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pb-1">
-        {/* Search */}
+
         <div className="relative flex-1 max-w-sm">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search route or service #..."
+            placeholder="Search route or service"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-7 pr-7 h-8 bg-card border-border/60 rounded-lg text-sm"
@@ -643,9 +604,8 @@ export function OperatorDashboard() {
           )}
         </div>
 
-        {/* Filters Group */}
         <div className="flex items-center gap-2 overflow-x-auto">
-          {/* Status Filters */}
+
           <div className="flex items-center gap-1 bg-muted/30 p-1 rounded-lg border border-border/30">
             {(['all', 'on-time', 'delayed', 'cancelled'] as const).map((st) => (
               <button
@@ -664,36 +624,20 @@ export function OperatorDashboard() {
               </button>
             ))}
           </div>
-
-          {/* Mode Filter */}
-          <Select value={modeFilter} onValueChange={(val) => setModeFilter(val as 'all' | ServiceType)}>
-            <SelectTrigger className="h-8 w-28 bg-card border-border/60 rounded-lg text-sm">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all" className="text-sm">All Modes</SelectItem>
-              <SelectItem value="train" className="text-sm">Trains</SelectItem>
-              <SelectItem value="flight" className="text-sm">Flights</SelectItem>
-              <SelectItem value="bus" className="text-sm">Buses</SelectItem>
-              <SelectItem value="metro" className="text-sm">Metro</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
       </div>
 
-      {/* Column Headers for Desktop Grid */}
       {filteredServices.length > 0 && (
         <div className="hidden md:grid md:grid-cols-12 gap-4 px-4 py-1 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
           <div className="col-span-5">Service & Route</div>
           <div className="col-span-3">Timetable</div>
-          <div className="col-span-2">Capacity & Fare</div>
+          <div className="col-span-2">Fare</div>
           <div className="col-span-2 text-right">Actions</div>
         </div>
       )}
 
-      {/* Services List */}
       <div className="space-y-2">
-        {filteredServices.map((service) => {
+        {paginatedServices.map((service) => {
           const ModeIcon = getTransitIcon(service.type);
           const isCancelled = service.isCancelled;
           const isDelayed = service.isDelayed;
@@ -709,7 +653,7 @@ export function OperatorDashboard() {
               className={`p-4 sm:px-4 rounded-xl bg-card border border-border/50 transition-all duration-150 hover:border-border/80 hover:shadow-2xs flex flex-col md:grid md:grid-cols-12 md:items-center gap-3 md:gap-4 ${isCancelled ? 'opacity-55 bg-muted/10' : ''
                 }`}
             >
-              {/* Col 1-5: Service & Route */}
+
               <div className="col-span-5 flex items-center gap-3 min-w-0">
                 <div className="p-2 rounded-lg bg-muted/40 text-muted-foreground shrink-0">
                   <ModeIcon className="w-4 h-4" />
@@ -721,7 +665,6 @@ export function OperatorDashboard() {
                       {service.serviceNumber}
                     </span>
 
-                    {/* Status Pill with dot indicator */}
                     {isCancelled ? (
                       <span className="inline-flex items-center gap-2 text-[10px] font-medium text-destructive px-2 py-1 rounded-full bg-destructive/10 border border-destructive/20">
                         <span className="w-2 h-2 rounded-full bg-destructive" />
@@ -743,18 +686,17 @@ export function OperatorDashboard() {
                   <div className="text-sm text-foreground flex items-center gap-2 font-medium truncate">
                     <span>{service.originStation.city}</span>
                     <span className="font-mono text-[11px] text-muted-foreground">({service.originStation.code})</span>
-                    <ArrowRight className="w-3 h-3 text-muted-foreground/60 shrink-0" />
+                    <ArrowRight className="w-3 h-3 text-muted-foreground" />
                     <span>{service.destinationStation.city}</span>
                     <span className="font-mono text-[11px] text-muted-foreground">({service.destinationStation.code})</span>
                   </div>
                 </div>
               </div>
 
-              {/* Col 6-8: Timetable with overnight badge */}
               <div className="col-span-3 text-sm font-mono text-muted-foreground">
                 <div className="text-foreground/90 font-medium flex items-center gap-2">
                   <span>{format(depDate, 'HH:mm')}</span>
-                  <span className="text-muted-foreground/50">→</span>
+                  <ArrowRight className="w-3 h-3 text-muted-foreground" />
                   <span>{format(arrDate, 'HH:mm')}</span>
                   {isNextDay && (
                     <span className="text-[9px] font-mono font-medium text-amber-400 bg-amber-500/10 border border-amber-500/20 px-1 rounded">
@@ -767,17 +709,12 @@ export function OperatorDashboard() {
                 </div>
               </div>
 
-              {/* Col 9-10: Capacity & Fare */}
               <div className="col-span-2 text-sm font-mono text-muted-foreground">
                 <div className="text-foreground/90 font-medium">
                   ₹{Number(service.price).toLocaleString('en-IN')}
                 </div>
-                <div className="text-[11px] text-muted-foreground">
-                  {service.seatCapacity} seats
-                </div>
               </div>
 
-              {/* Col 11-12: Actions */}
               <div className="col-span-2 flex items-center md:justify-end gap-2 pt-2 md:pt-0 border-t md:border-t-0 border-border/30">
                 {!isCancelled ? (
                   <>
@@ -816,7 +753,6 @@ export function OperatorDashboard() {
           );
         })}
 
-        {/* Empty state */}
         {filteredServices.length === 0 && (
           <div className="p-8 rounded-xl bg-card border border-border/40 text-center space-y-2">
             <CheckCircle2 className="w-6 h-6 text-muted-foreground mx-auto" />
@@ -830,7 +766,6 @@ export function OperatorDashboard() {
                 onClick={() => {
                   setSearchQuery('');
                   setStatusFilter('all');
-                  setModeFilter('all');
                 }}
                 className="text-sm h-7"
               >
@@ -839,9 +774,57 @@ export function OperatorDashboard() {
             )}
           </div>
         )}
+
+        {filteredServices.length > 0 && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-border/30">
+            <p className="text-xs text-muted-foreground font-mono">
+              Showing {(page - 1) * ITEMS_PER_PAGE + 1}-{Math.min(page * ITEMS_PER_PAGE, filteredServices.length)} of {filteredServices.length} scheduled departures
+            </p>
+
+            {totalPages > 1 && (
+              <Pagination className="justify-end w-auto mx-0">
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() => setPage((p) => Math.max(1, p - 1))}
+                      disabled={page === 1}
+                    />
+                  </PaginationItem>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
+                    if (totalPages > 6 && Math.abs(p - page) > 2 && p !== 1 && p !== totalPages) {
+                      if (p === 2 || p === totalPages - 1) {
+                        return (
+                          <PaginationItem key={p}>
+                            <PaginationEllipsis />
+                          </PaginationItem>
+                        );
+                      }
+                      return null;
+                    }
+                    return (
+                      <PaginationItem key={p}>
+                        <PaginationLink
+                          isActive={p === page}
+                          onClick={() => setPage(p)}
+                        >
+                          {p}
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                  })}
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                      disabled={page === totalPages}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* Streamlined Delay Dialog */}
       <Dialog
         open={delayDialog.isOpen}
         onOpenChange={(open) => setDelayDialog((prev) => ({ ...prev, isOpen: open }))}
@@ -859,7 +842,7 @@ export function OperatorDashboard() {
 
           {delayDialog.service && (
             <div className="space-y-3 my-1">
-              {/* Presets and duration input */}
+
               <div className="space-y-2">
                 <label className="text-sm text-muted-foreground font-medium">Delay</label>
                 <div className="flex items-center gap-2 flex-wrap">
@@ -893,7 +876,6 @@ export function OperatorDashboard() {
                 </div>
               </div>
 
-              {/* Calculated Arrival */}
               {delayDialog.minutes > 0 && (
                 <div className="text-sm text-muted-foreground font-mono flex items-center justify-between py-1 px-2 rounded bg-muted/30">
                   <span>New Arrival:</span>
@@ -906,7 +888,6 @@ export function OperatorDashboard() {
                 </div>
               )}
 
-              {/* Reason */}
               <div className="space-y-1">
                 <label className="text-sm text-muted-foreground font-medium">Reason</label>
                 <Select
@@ -926,7 +907,6 @@ export function OperatorDashboard() {
                 </Select>
               </div>
 
-              {/* Optional Notes */}
               <div className="space-y-1">
                 <label className="text-sm text-muted-foreground font-medium">Notes (optional)</label>
                 <Input
@@ -964,7 +944,6 @@ export function OperatorDashboard() {
         </DialogContent>
       </Dialog>
 
-      {/* Streamlined Cancel Dialog */}
       <Dialog
         open={cancelDialog.isOpen}
         onOpenChange={(open) => setCancelDialog((prev) => ({ ...prev, isOpen: open }))}
@@ -978,16 +957,26 @@ export function OperatorDashboard() {
               Cancel Service {cancelDialog.service?.serviceNumber}?
             </DialogTitle>
             <DialogDescription className="text-sm text-muted-foreground">
-              This triggers automatic cascade re-routing or refund options for all booked passengers.
+              Affected passengers will be alerted and shown re-route options automatically.
             </DialogDescription>
           </DialogHeader>
+
+          <div className="space-y-1 my-1">
+            <label className="text-sm text-muted-foreground font-medium">Reason (optional)</label>
+            <Input
+              placeholder="e.g. Technical fault, weather..."
+              value={cancelDialog.reason}
+              onChange={(e) => setCancelDialog((prev) => ({ ...prev, reason: e.target.value }))}
+              className="h-8 bg-background/50 border-border/70 rounded-lg text-sm"
+            />
+          </div>
 
           <DialogFooter className="pt-2 border-t border-border/40 flex justify-end gap-2">
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              onClick={() => setCancelDialog({ isOpen: false, service: null })}
+              onClick={() => setCancelDialog({ isOpen: false, service: null, reason: '' })}
               className="rounded-lg text-sm h-8"
             >
               Keep Service

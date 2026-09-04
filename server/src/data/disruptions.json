@@ -1,37 +1,23 @@
 [
   {
-    "serviceNumber": "6E-501",
+    "serviceNumber": "6E-201",
     "type": "delay",
-    "description": "ATC congestion and runway queue at DEL T3",
+    "description": "ATC airspace congestion and heavy arrival queue at BOM T2",
     "reportedByEmail": "ops@indigo.in",
-    "delayMinutes": 60
-  },
-  {
-    "serviceNumber": "TR-SHRAM-EXP",
-    "type": "delay",
-    "description": "Signal clearance and track maintenance near Kanpur",
-    "reportedByEmail": "ops@indianrail.gov.in",
-    "delayMinutes": 45
-  },
-  {
-    "serviceNumber": "TR-BRINDAVAN-EXP",
-    "type": "delay",
-    "description": "Overhead equipment maintenance near Katpadi Junction",
-    "reportedByEmail": "ops@indianrail.gov.in",
-    "delayMinutes": 30
-  },
-  {
-    "serviceNumber": "DTC-ISBT-DEL-02",
-    "type": "delay",
-    "description": "Heavy traffic congestion on Delhi Ring Road",
-    "reportedByEmail": "ops@statebuses.in",
-    "delayMinutes": 20
+    "delayMinutes": 320
   },
   {
     "serviceNumber": "TR-12954",
     "type": "delay",
-    "description": "Monsoon speed regulation in Western Ghats corridor",
+    "description": "Signal clearance and track maintenance near Kota corridor",
     "reportedByEmail": "ops@indianrail.gov.in",
-    "delayMinutes": 40
+    "delayMinutes": 45
+  },
+  {
+    "serviceNumber": "BUS-DEL-BOM",
+    "type": "delay",
+    "description": "Highway maintenance detour on National Expressway 48",
+    "reportedByEmail": "ops@statebuses.in",
+    "delayMinutes": 60
   }
 ]

@@ -36,6 +36,9 @@ export class Itinerary {
   @Column({ type: 'jsonb', nullable: true })
   destinationWalk: WalkLeg | null;
 
+  @Column({ type: 'jsonb', nullable: true })
+  pendingAlternatives: any | null;
+
   @OneToMany(() => ItinerarySegment, (segment) => segment.itinerary, { cascade: true })
   segments: ItinerarySegment[];
 

@@ -77,7 +77,6 @@ export function ItineraryResultsPage() {
     setSearchParams(nextParams);
   };
 
-  // Derive human-readable corridor name from first result
   const corridorInfo = useMemo(() => {
     if (!results || results.length === 0) return null;
     const firstServices = results[0]?.services;
@@ -106,7 +105,7 @@ export function ItineraryResultsPage() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      {/* Header Bar */}
+      
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Button
@@ -140,7 +139,6 @@ export function ItineraryResultsPage() {
           </div>
         </div>
 
-        {/* Sort Tabs */}
         <div className="flex items-center bg-muted/30 border border-border/60 p-1 rounded-xl self-start sm:self-auto overflow-x-auto max-w-full">
           {sortTabs.map((tab) => {
             const Icon = tab.icon;
@@ -163,7 +161,6 @@ export function ItineraryResultsPage() {
         </div>
       </div>
 
-      {/* Loading State */}
       {loading && (
         <div className="flex flex-col items-center justify-center min-h-[360px] space-y-4 rounded-2xl bg-card border border-border/60 p-10 text-center">
           <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
@@ -176,7 +173,6 @@ export function ItineraryResultsPage() {
         </div>
       )}
 
-      {/* Error State */}
       {error && !loading && (
         <div className="flex flex-col items-center justify-center min-h-[320px] space-y-4 rounded-2xl bg-destructive/5 border border-destructive/20 p-8 text-center">
           <AlertCircle className="w-10 h-10 text-destructive" />
@@ -190,7 +186,6 @@ export function ItineraryResultsPage() {
         </div>
       )}
 
-      {/* Empty State */}
       {!loading && !error && results.length === 0 && (
         <div className="flex flex-col items-center justify-center min-h-[320px] space-y-4 rounded-2xl bg-card border border-border/60 p-10 text-center">
           <div className="h-12 w-12 rounded-xl bg-muted/60 flex items-center justify-center text-muted-foreground">
@@ -208,7 +203,6 @@ export function ItineraryResultsPage() {
         </div>
       )}
 
-      {/* Results List */}
       {!loading && !error && results.length > 0 && (
         <div className="space-y-4">
           <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground px-1">
@@ -221,7 +215,7 @@ export function ItineraryResultsPage() {
                 key={idx}
                 className="p-4 sm:p-5 rounded-2xl bg-card border border-border/50 shadow-xs hover:border-border/80 transition-all duration-150 space-y-4 min-w-0 max-w-full overflow-hidden"
               >
-                {/* Metric Summary Bar */}
+                
                 <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-border/30 min-w-0">
                   <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                     <div className="text-lg sm:text-xl font-semibold tracking-tight text-foreground">
@@ -240,7 +234,6 @@ export function ItineraryResultsPage() {
                   </div>
                 </div>
 
-                {/* Shared-Interchange Timeline Container */}
                 <div className="w-full min-w-0 max-w-full overflow-x-auto custom-scrollbar overscroll-x-contain py-1">
                   <JourneyTimeline
                     services={path.services}
@@ -249,7 +242,6 @@ export function ItineraryResultsPage() {
                   />
                 </div>
 
-                {/* Footer Actions */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-center gap-3 pt-3 border-t border-border/40">
                   <Button
                     onClick={() => navigate('/book', { state: { path } })}

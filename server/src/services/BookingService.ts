@@ -27,10 +27,8 @@ export class BookingService {
       let totalCost = 0;
       const services: Service[] = [];
 
-      // 1. Verify availability and decrement seats (pessimistic lock would be ideal, but for now just update)
       for (const id of serviceIds) {
-        // Find with pessimistic write lock to prevent race conditions during seat booking
-        const service = await queryRunner.manager.findOne(Service, { 
+        const service = await queryRunner.manager.findOne(Service, {
           where: { id },
           lock: { mode: 'pessimistic_write' }
         });
@@ -38,21 +36,14 @@ export class BookingService {
         if (!service) {
           throw new NotFoundError(`Service ${id} not found`);
         }
-        if (service.availableSeats <= 0) {
-          throw new BadRequestError(`Service ${service.serviceNumber} is fully booked`);
-        }
         if (service.isCancelled) {
           throw new BadRequestError(`Service ${service.serviceNumber} is cancelled`);
         }
 
-        service.availableSeats -= 1;
         totalCost += Number(service.price);
         services.push(service);
-
-        await queryRunner.manager.save(service);
       }
 
-      // 2. Create the Itinerary
       let itinerary = queryRunner.manager.create(Itinerary, {
         traveler,
         totalCost,
@@ -60,37 +51,29 @@ export class BookingService {
       });
       itinerary = await queryRunner.manager.save(itinerary);
 
-      // 3. Create Segments & Tickets
-      const segments: ItinerarySegment[] = [];
-      const tickets: Ticket[] = [];
-
       for (let i = 0; i < services.length; i++) {
         const service = services[i];
-        
+
         let segment = queryRunner.manager.create(ItinerarySegment, {
           itinerary,
           service,
           segmentOrder: i
         });
         segment = await queryRunner.manager.save(segment);
-        segments.push(segment);
 
-        // Generate a mock QR seed
         const qrSeed = crypto.randomUUID();
 
-        let ticket = queryRunner.manager.create(Ticket, {
+        const ticket = queryRunner.manager.create(Ticket, {
           traveler,
           itinerarySegment: segment,
           status: TicketStatus.VALID,
           qrCode: `waypoint-qr-${qrSeed}`
         });
-        ticket = await queryRunner.manager.save(ticket);
-        tickets.push(ticket);
+        await queryRunner.manager.save(ticket);
       }
 
       await queryRunner.commitTransaction();
 
-      // Return the complete Itinerary with segments
       return await AppDataSource.getRepository(Itinerary).findOne({
         where: { id: itinerary.id },
         relations: {
@@ -98,6 +81,9 @@ export class BookingService {
             service: { originStation: true, destinationStation: true, operator: true },
             tickets: true
           }
+        },
+        order: {
+          segments: { segmentOrder: 'ASC' }
         }
       }) as Itinerary;
 
@@ -118,7 +104,47 @@ export class BookingService {
           tickets: true
         }
       },
-      order: { createdAt: 'DESC' }
+      order: {
+        createdAt: 'DESC',
+        segments: { segmentOrder: 'ASC' }
+      }
     });
+  }
+
+  async getBookingById(travelerId: string, itineraryId: string): Promise<Itinerary> {
+    const itinerary = await AppDataSource.getRepository(Itinerary).findOne({
+      where: { id: itineraryId, traveler: { id: travelerId } },
+      relations: {
+        segments: {
+          service: { originStation: true, destinationStation: true, operator: true },
+          tickets: true
+        }
+      },
+      order: {
+        segments: { segmentOrder: 'ASC' }
+      }
+    });
+
+    if (!itinerary) throw new NotFoundError('Itinerary not found');
+
+    await this.markCompletedIfDue(itinerary);
+
+    return itinerary;
+  }
+
+  private async markCompletedIfDue(itinerary: Itinerary) {
+    if (itinerary.status !== ItineraryStatus.ACTIVE) return;
+
+    const sorted = [...itinerary.segments].sort((a, b) => a.segmentOrder - b.segmentOrder);
+    const lastSeg = sorted[sorted.length - 1];
+    if (!lastSeg) return;
+
+    const arrivalTime = new Date(lastSeg.service.arrivalTime);
+    if (arrivalTime <= new Date()) {
+      itinerary.status = ItineraryStatus.COMPLETED;
+      await AppDataSource.getRepository(Itinerary).update(itinerary.id, {
+        status: ItineraryStatus.COMPLETED
+      });
+    }
   }
 }

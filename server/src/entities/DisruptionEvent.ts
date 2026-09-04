@@ -18,6 +18,9 @@ export class DisruptionEvent {
   @Column({ type: 'enum', enum: DisruptionType })
   type: DisruptionType;
 
+  @Column({ type: 'int', nullable: true })
+  delayMinutes: number;
+
   @Column({ type: 'text', nullable: true })
   description: string;
 

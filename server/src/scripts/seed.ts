@@ -7,6 +7,7 @@ import { Itinerary, ItineraryStatus } from '../entities/Itinerary';
 import { ItinerarySegment } from '../entities/ItinerarySegment';
 import { Ticket, TicketStatus } from '../entities/Ticket';
 import { DisruptionEvent, DisruptionType } from '../entities/DisruptionEvent';
+import { ItineraryRankingService } from '../services/ItineraryRankingService';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 
@@ -28,9 +29,6 @@ interface ServiceSeedInput {
   arrMinute?: number;
   durationMinutes?: number;
   price: number;
-  seatCapacity: number;
-  availableSeats: number;
-  vehicleLogo?: string;
   dayOffsets?: number[];
 }
 
@@ -57,7 +55,6 @@ export async function runComprehensiveSeed() {
 
   const defaultHash = await bcrypt.hash('Password123!', 10);
 
-  // 1. Seed Users
   console.log(`Seeding ${usersData.length} users...`);
   const userEntities = usersData.map((u) =>
     userRepo.create({
@@ -71,7 +68,6 @@ export async function runComprehensiveSeed() {
   const savedUsers = await userRepo.save(userEntities);
   const userMap = new Map<string, User>(savedUsers.map((u) => [u.email, u]));
 
-  // 2. Seed Stations
   console.log(`Seeding ${stationsData.length} stations...`);
   const stationEntities = stationsData.map((s) =>
     stationRepo.create({
@@ -85,7 +81,6 @@ export async function runComprehensiveSeed() {
   const savedStations = await stationRepo.save(stationEntities);
   const stationMap = new Map<string, Station>(savedStations.map((s) => [s.code, s]));
 
-  // 3. Seed Services across Multi-Day Schedule (Today, Tomorrow, Day+2)
   console.log(`Seeding services from ${servicesData.length} route templates...`);
   const now = new Date();
 
@@ -97,7 +92,7 @@ export async function runComprehensiveSeed() {
   }
 
   const generatedServices: Service[] = [];
-  const activeDayOffsets = [0, 1, 2]; // Day 0 = Today, Day 1 = Tomorrow (primary), Day 2 = Day After Tomorrow
+  const activeDayOffsets = [0, 1, 2];
 
   for (const rawItem of servicesData as ServiceSeedInput[]) {
     const operator = userMap.get(rawItem.operatorEmail) || userMap.get('ops@metrotransit.in')!;
@@ -130,7 +125,6 @@ export async function runComprehensiveSeed() {
         arrivalTime = new Date(departureTime.getTime() + 60 * 60_000);
       }
 
-      // Keep primary serviceNumber for Day 1 (tomorrow), and add suffix for Day 0 / Day 2
       const serviceNumber =
         dayOffset === 1
           ? rawItem.serviceNumber
@@ -146,9 +140,6 @@ export async function runComprehensiveSeed() {
           departureTime,
           arrivalTime,
           price: rawItem.price,
-          seatCapacity: rawItem.seatCapacity,
-          availableSeats: rawItem.availableSeats,
-          vehicleLogo: rawItem.vehicleLogo,
           isDelayed: false,
           isCancelled: false,
         }),
@@ -160,7 +151,6 @@ export async function runComprehensiveSeed() {
   const srvMap = new Map<string, Service>(savedServices.map((s) => [s.serviceNumber, s]));
   console.log(`Successfully saved ${savedServices.length} active service instances.`);
 
-  // 4. Seed Disruptions
   console.log(`Seeding ${disruptionsData.length} disruption events...`);
   for (const d of disruptionsData) {
     const service = srvMap.get(d.serviceNumber);
@@ -184,12 +174,14 @@ export async function runComprehensiveSeed() {
       service,
       type: d.type as DisruptionType,
       description: d.description,
+      delayMinutes: d.delayMinutes ?? null,
       reportedBy: reporter,
     });
     await disruptionRepo.save(disruption);
   }
 
-  // 5. Seed Itineraries & Tickets
+  const rankingService = new ItineraryRankingService();
+
   console.log(`Seeding ${itinerariesData.length} itineraries with segments and tickets...`);
   for (const itData of itinerariesData) {
     const traveler = userMap.get(itData.travelerEmail);
@@ -238,6 +230,26 @@ export async function runComprehensiveSeed() {
       }),
     );
     await ticketRepo.save(tickets);
+
+    if (itData.status === 'disrupted' && matchedServices.length > 1) {
+      try {
+        const breakdownStation = matchedServices[0].destinationStation;
+        const ultimateStation = matchedServices[matchedServices.length - 1].destinationStation;
+        const earliestDeparture = new Date(matchedServices[0].arrivalTime.getTime() + 30 * 60_000);
+
+        const alternatives = await rankingService.search(
+          { lat: Number(breakdownStation.latitude), lng: Number(breakdownStation.longitude) },
+          { lat: Number(ultimateStation.latitude), lng: Number(ultimateStation.longitude) },
+          earliestDeparture,
+          'cheapest',
+        );
+
+        itinerary.pendingAlternatives = alternatives.slice(0, 3);
+        await itineraryRepo.save(itinerary);
+      } catch (e) {
+        console.warn('Failed to compute seed alternatives:', e);
+      }
+    }
   }
 
   console.log('Seeding complete.');
@@ -248,7 +260,7 @@ export async function runComprehensiveSeed() {
   console.log(`  Services:     ${savedServices.length}`);
   console.log('Credentials (Password: Password123!):');
   console.log('  Superadmin:   admin@waypoint.com');
-  console.log('  Operators:    ops@indigo.in, ops@airindia.in, ops@indianrail.gov.in, ops@metrotransit.in');
+  console.log('  Operators:    ops@indigo.in, ops@airindia.in, ops@indianrail.gov.in, ops@metrotransit.in, ops@statebuses.in');
   console.log('  Travelers:    aarav@gmail.com, ananya@gmail.com, rohan@gmail.com, priya@gmail.com');
   console.log('----------------------------------------------------');
 

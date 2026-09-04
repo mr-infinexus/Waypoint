@@ -17,7 +17,25 @@ export class DisruptionController {
         description
       );
 
-      res.status(201).json({ message: 'Disruption reported and cascade replan triggered', event });
+      res.status(201).json({ message: 'Delay reported and cascade flagging triggered', event });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async reportCancellation(req: Request, res: Response, next: NextFunction) {
+    try {
+      const operatorId = req.user!.userId;
+      const { serviceId } = req.params;
+      const { description } = req.body;
+
+      const event = await disruptionService.reportCancellation(
+        operatorId,
+        serviceId as string,
+        description
+      );
+
+      res.status(201).json({ message: 'Cancellation reported and cascade flagging triggered', event });
     } catch (error) {
       next(error);
     }

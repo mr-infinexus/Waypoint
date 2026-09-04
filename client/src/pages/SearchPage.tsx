@@ -134,19 +134,15 @@ export function SearchPage() {
   const [loadingStations, setLoadingStations] = useState(true);
   const [isSwapping, setIsSwapping] = useState(false);
 
-  // Selected station states
   const [originStation, setOriginStation] = useState<Station | null>(null);
   const [destStation, setDestStation] = useState<Station | null>(null);
 
-  // Search input queries
   const [originQuery, setOriginQuery] = useState('');
   const [destQuery, setDestQuery] = useState('');
 
-  // Dropdown open states
   const [originFocused, setOriginFocused] = useState(false);
   const [destFocused, setDestFocused] = useState(false);
 
-  // Raw coordinates for route calculation
   const origin = useMemo(() => {
     if (originStation && originStation.latitude !== null && originStation.longitude !== null) {
       return { lat: originStation.latitude, lng: originStation.longitude };
@@ -182,7 +178,6 @@ export function SearchPage() {
       });
   }, []);
 
-  // Filtered station suggestions
   const originSuggestions = useMemo(() => {
     if (!originQuery.trim()) return stations.slice(0, 8);
     const q = originQuery.toLowerCase().trim();
@@ -205,7 +200,6 @@ export function SearchPage() {
     );
   }, [stations, destQuery]);
 
-  // Select origin
   const handleSelectOrigin = (station: Station) => {
     setOriginStation(station);
     setOriginQuery(`${station.code} • ${station.city}`);
@@ -216,14 +210,12 @@ export function SearchPage() {
     }
   };
 
-  // Select destination
   const handleSelectDest = (station: Station) => {
     setDestStation(station);
     setDestQuery(`${station.code} • ${station.city}`);
     setDestFocused(false);
   };
 
-  // Swap Origin & Destination
   const handleSwap = () => {
     setIsSwapping(true);
     setTimeout(() => setIsSwapping(false), 250);
@@ -238,7 +230,6 @@ export function SearchPage() {
     setDestQuery(tempQuery);
   };
 
-  // Calculate straight-line distance
   const straightLineDistance = useMemo(() => {
     if (!origin || !destination) return null;
     return Number(haversineDistanceKm(origin.lat, origin.lng, destination.lat, destination.lng).toFixed(1));
@@ -268,10 +259,10 @@ export function SearchPage() {
 
   return (
     <div className="w-full h-full flex flex-col lg:flex-row overflow-hidden relative bg-background">
-      {/* Sidebar Control Panel */}
+      
       <div className="w-full lg:w-[420px] xl:w-[460px] flex flex-col justify-between p-5 sm:p-6 bg-card border-r border-border/60 overflow-y-auto shrink-0 z-20 space-y-4">
         <div className="space-y-4">
-          {/* Header */}
+          
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <div className="p-2 rounded-lg bg-muted text-muted-foreground">
@@ -284,9 +275,8 @@ export function SearchPage() {
             </p>
           </div>
 
-          {/* Unified Routing Card */}
           <div className="p-3 rounded-xl bg-muted/20 border border-border/60 space-y-3 relative">
-            {/* Origin Input */}
+            
             <div className="space-y-1 relative">
               <label className="text-[11px] font-medium text-muted-foreground flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-500" />
@@ -337,7 +327,6 @@ export function SearchPage() {
               />
             </div>
 
-            {/* Central Swap Divider */}
             <div className="relative flex items-center justify-center my-1">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-border/40" />
@@ -354,7 +343,6 @@ export function SearchPage() {
               </button>
             </div>
 
-            {/* Destination Input */}
             <div className="space-y-1 relative">
               <label className="text-[11px] font-medium text-muted-foreground flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-rose-500" />
@@ -406,9 +394,8 @@ export function SearchPage() {
             </div>
           </div>
 
-          {/* Date & Heuristic Parameters */}
           <div className="space-y-3">
-            {/* Travel Date */}
+            
             <div className="space-y-1">
               <label className="text-[11px] font-medium text-muted-foreground flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-muted-foreground" />
@@ -423,7 +410,6 @@ export function SearchPage() {
               />
             </div>
 
-            {/* Sort Heuristic */}
             <div className="space-y-1">
               <label className="text-[11px] font-medium text-muted-foreground flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-muted-foreground" />
@@ -453,7 +439,6 @@ export function SearchPage() {
           </div>
         </div>
 
-        {/* Bottom Search CTA */}
         <div className="pt-3 border-t border-border/40 space-y-2">
           {straightLineDistance !== null && (
             <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
@@ -489,9 +474,8 @@ export function SearchPage() {
         </div>
       </div>
 
-      {/* Map Route Preview Canvas */}
       <div className="flex-1 h-[400px] lg:h-full relative overflow-hidden">
-        {/* Active Route Overview Badge */}
+        
         {originStation && destStation && (
           <div className="absolute top-3 right-3 z-400 bg-card/90 backdrop-blur-md border border-border/60 px-3 py-2 rounded-lg shadow-xs text-xs font-mono flex items-center gap-2 pointer-events-auto">
             <span className="text-emerald-400 font-semibold">{originStation.code}</span>

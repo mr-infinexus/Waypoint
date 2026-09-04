@@ -23,16 +23,6 @@ export class AdminController {
     }
   }
 
-  static async onboardOperator(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { name, email, password } = req.body;
-      const operator = await adminService.onboardOperator(name, email, password);
-      res.status(201).json(operator);
-    } catch (error) {
-      next(error);
-    }
-  }
-
   static async listOperators(req: Request, res: Response, next: NextFunction) {
     try {
       const operators = await adminService.listOperators();
@@ -46,6 +36,45 @@ export class AdminController {
     try {
       const { id } = req.params;
       const result = await adminService.suspendOperator(id as string);
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async activateOperator(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const result = await adminService.activateOperator(id as string);
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async listUsers(req: Request, res: Response, next: NextFunction) {
+    try {
+      const users = await adminService.listUsers();
+      res.status(200).json(users);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async suspendUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const result = await adminService.suspendUser(id as string);
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async activateUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const result = await adminService.activateUser(id as string);
       res.status(200).json(result);
     } catch (error) {
       next(error);

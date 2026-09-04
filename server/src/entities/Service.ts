@@ -40,14 +40,6 @@ export class Service {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
 
-  @Column({ type: 'int' })
-  seatCapacity: number;
-
-  @Column({ type: 'int' })
-  availableSeats: number;
-
-  @Column({ nullable: true })
-  vehicleLogo: string;
 
   @Column({ default: false })
   isDelayed: boolean;

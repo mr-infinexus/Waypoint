@@ -34,9 +34,7 @@ export const api = async (endpoint: string, options: RequestInit = {}) => {
     try {
       const data = await res.json();
       message = data.message || message;
-    } catch {
-      // Ignore JSON parse errors
-    }
+    } catch { }
     throw new ApiError(message, res.status);
   }
 

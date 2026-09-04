@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { UnauthorizedError } from '../utils/errors';
-import { UserRole } from '../entities/User';
+import { User, UserRole } from '../entities/User';
+import { AppDataSource } from '../config/data-source';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecret';
 
@@ -10,7 +11,6 @@ export interface JwtPayload {
   role: UserRole;
 }
 
-// Extend Express Request type to include user
 declare global {
   namespace Express {
     interface Request {
@@ -19,8 +19,11 @@ declare global {
   }
 }
 
-export const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.cookies.jwt || req.headers.authorization?.split(' ')[1];
+export const authenticateJWT = async (req: Request, res: Response, next: NextFunction) => {
+  const token =
+    req.cookies.jwt ||
+    req.headers.authorization?.split(' ')[1] ||
+    (typeof req.query.token === 'string' ? req.query.token : undefined);
 
   if (!token) {
     return next(new UnauthorizedError('Authentication token missing'));
@@ -28,9 +31,19 @@ export const authenticateJWT = (req: Request, res: Response, next: NextFunction)
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
-    req.user = decoded;
+    const userRepo = AppDataSource.getRepository(User);
+    const user = await userRepo.findOne({
+      where: { id: decoded.userId },
+      select: { id: true, role: true, isActive: true },
+    });
+
+    if (!user || !user.isActive) {
+      return next(new UnauthorizedError('Account is inactive or suspended'));
+    }
+
+    req.user = { userId: user.id, role: user.role };
     next();
-  } catch (error) {
+  } catch {
     next(new UnauthorizedError('Invalid or expired token'));
   }
 };
