@@ -1,34 +1,67 @@
-# Waypoint - Multi-Modal Travel Itinerary System
+# Waypoint — Multi-Modal Travel Itinerary System
 
-Waypoint is a full-stack web application designed for a seamless, multi-modal travel experience. It allows travelers to book unified journeys across flights, trains, metros, and local buses. Its defining feature is a **Disruption Detection and Cascade Re-plan Engine** which mathematically detects broken layovers due to operator delays, automatically shelves obsolete segments, and autonomously books backup transit options in real-time.
+Waypoint is a full-stack web application for planning, booking, and managing multi-modal travel journeys across flights, trains, metros, and buses. It features an automated **Disruption Detection and Cascade Re-planning Engine** that monitors operator delays, detects broken layovers, alerts affected passengers via real-time SSE and email, and generates instant alternative route solutions.
 
-## Features
-- **Multi-Modal Search Algorithm**: Uses Breadth-First Search (BFS) to stitch together routes across different transport methods, enforcing a strict 30-minute layover safety buffer.
-- **Pessimistic Locking for Bookings**: Utilizes SQL transactions to prevent double-booking of limited seat inventory.
-- **Cascade Replanning**: Instantly routes travelers to alternative transport when delays break layover margins.
-- **Role-Based Access Control**: Fully secured with JWTs separating Travelers, Operators, and Admins.
-- **Polished Dashboard**: React-based dashboard featuring modern visuals, `react-leaflet` integrations, and dynamic ticket bookings with QR codes.
-- **High-Performance Caching**: Employs Redis caching for intensive graph-search itinerary queries.
+---
+
+## Key Features
+
+- **Multi-Modal Route Search**: RAPTOR-inspired multi-criteria route engine providing Pareto-optimal journey options (Fastest, Cheapest, and Fewest Transfers) with walking transfer connections between nearby transit hubs.
+- **Pessimistic Locking**: Prevents double-booking during concurrent ticket reservation using SQL transaction locks.
+- **Cascade Disruption Recovery**: Detects broken connections when a service is delayed or cancelled. Automatically flags affected itineraries and generates viable replacement options.
+- **Real-Time Notifications**: Server-Sent Events (SSE) push instant disruption banners to the traveler's browser, accompanied by automated transactional alert emails.
+- **Role-Based Access Control (RBAC)**: Secure JWT authentication with dedicated portals for:
+  - **Travelers**: Search routes, view interactive Leaflet maps, book multi-segment journeys, and access QR-coded tickets.
+  - **Operators**: Manage scheduled services, report delays and cancellations, and view affected passenger counts.
+  - **Admins**: Platform oversight, station registry management, and operator account activation/deactivation.
+- **Redis Caching**: Caches frequent route searches and station queries for low-latency responses.
+
+---
 
 ## Technology Stack
-- **Backend**: Node.js, Express, TypeScript, TypeORM, PostgreSQL, Redis
-- **Frontend**: React, Vite, TailwindCSS, React-Leaflet, qrcode.react
 
-## How to Run
-1. Start the infrastructure:
-   ```bash
-   docker-compose up -d
-   ```
-2. Start the backend:
-   ```bash
-   cd server
-   npm install
-   npm run seed
-   npm run dev
-   ```
-3. Start the frontend:
-   ```bash
-   cd client
-   npm install
-   npm run dev
-   ```
+- **Frontend**: React, Vite, TypeScript, TailwindCSS, React-Leaflet, Lucide React, `qrcode.react`
+- **Backend**: Node.js, Express, TypeScript, TypeORM
+- **Databases & Cache**: PostgreSQL, Redis
+- **Email & Alerts**: Nodemailer + MailHog
+
+---
+
+## Getting Started
+
+### Prerequisites
+- Node.js (v18 or later)
+- Docker and Docker Compose
+
+### 1. Start Infrastructure Services
+Launch PostgreSQL, Redis, and MailHog:
+```bash
+docker-compose up -d
+```
+
+### 2. Set Up and Run the Backend
+```bash
+cd server
+npm install
+npm run seed     # Runs migrations and seeds sample data
+npm run dev      # Starts API server on http://localhost:5000
+```
+
+### 3. Set Up and Run the Frontend
+```bash
+cd client
+npm install
+npm run dev      # Starts Vite dev server on http://localhost:5173
+```
+
+---
+
+## Service Endpoints & Ports
+
+| Service | URL | Description |
+| :--- | :--- | :--- |
+| **Frontend Web App** | `http://localhost:5173` | React single-page application |
+| **Backend REST API** | `http://localhost:5000/api` | Express API endpoints |
+| **Interactive API Docs** | `http://localhost:5000/api/docs` | Swagger / OpenAPI 3.1 interface |
+| **MailHog Web UI** | `http://localhost:8025` | Local inbox to view outgoing email alerts |
+
