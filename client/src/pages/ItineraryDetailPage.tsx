@@ -248,7 +248,7 @@ export function ItineraryDetailPage() {
       <div className="p-5 sm:p-6 rounded-2xl bg-card border border-border/60 shadow-xs space-y-5 min-w-0 max-w-full overflow-hidden">
         <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-border/40 min-w-0">
           <div>
-            <span className="text-[11px] font-medium text-muted-foreground">Total Fare</span>
+            <span className="text-sm font-medium text-muted-foreground">Total Fare</span>
             <div className="text-2xl font-bold tracking-tight text-foreground mt-1">
               ₹{totalPrice.toLocaleString('en-IN')}
             </div>
@@ -279,7 +279,7 @@ export function ItineraryDetailPage() {
         </div>
 
         <div>
-          <span className="text-[11px] font-medium text-muted-foreground block mb-3">
+          <span className="text-sm font-medium text-muted-foreground block mb-3">
             Journey Sequence & Guaranteed Layover Buffers
           </span>
           <div className="w-full min-w-0 max-w-full overflow-x-auto custom-scrollbar overscroll-x-contain py-1">
@@ -428,11 +428,10 @@ export function ItineraryDetailPage() {
                       {ticket && (
                         <Badge
                           variant="outline"
-                          className={`text-[10px] font-semibold py-0.5 px-2 rounded-md ${
-                            ticket.status === 'valid'
-                              ? 'border-emerald-500/30 text-emerald-400 bg-emerald-500/10'
-                              : 'border-muted text-muted-foreground bg-muted/40'
-                          }`}
+                          className={`text-[10px] font-semibold py-0.5 px-2 rounded-md ${ticket.status === 'valid'
+                            ? 'border-emerald-500/30 text-emerald-400 bg-emerald-500/10'
+                            : 'border-muted text-muted-foreground bg-muted/40'
+                            }`}
                         >
                           {ticket.status === 'valid' ? 'Ticket Confirmed' : ticket.status}
                         </Badge>

@@ -9,8 +9,8 @@ export class ServiceCatalogService {
   private stationRepository = AppDataSource.getRepository(Station);
 
   async createService(
-    operatorId: string, 
-    type: ServiceType, 
+    operatorId: string,
+    type: ServiceType,
     serviceNumber: string,
     originStationId: string,
     destinationStationId: string,
@@ -49,7 +49,7 @@ export class ServiceCatalogService {
     serviceId: string,
     updates: Partial<Service>
   ) {
-    const service = await this.serviceRepository.findOne({ 
+    const service = await this.serviceRepository.findOne({
       where: { id: serviceId },
       relations: { operator: true }
     });
@@ -68,7 +68,7 @@ export class ServiceCatalogService {
   }
 
   async deleteService(operatorId: string, serviceId: string) {
-    const service = await this.serviceRepository.findOne({ 
+    const service = await this.serviceRepository.findOne({
       where: { id: serviceId },
       relations: { operator: true }
     });

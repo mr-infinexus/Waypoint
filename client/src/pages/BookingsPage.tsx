@@ -84,7 +84,7 @@ export function BookingsPage() {
 
   if (bookings.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4 rounded-3xl bg-card/40 backdrop-blur-xl border border-white/10 p-12 text-center max-w-lg mx-auto">
+      <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4 card-glass p-12 text-center max-w-lg mx-auto">
         <div className="w-16 h-16 bg-primary/15 border border-primary/30 rounded-2xl flex items-center justify-center text-primary mb-2">
           <Ticket className="w-8 h-8" />
         </div>
@@ -129,7 +129,7 @@ export function BookingsPage() {
             <div
               key={booking.id}
               onClick={() => navigate(`/itinerary/${booking.id}`)}
-              className="rounded-3xl bg-card/60 backdrop-blur-xl border border-white/10 shadow-2xl hover:border-primary/50 transition-all duration-200 cursor-pointer overflow-hidden group"
+              className="card-glass p-0 hover:border-primary/50 transition-all duration-200 cursor-pointer overflow-hidden group"
             >
               <div className="flex flex-col md:flex-row">
                 <div className="bg-muted/30 p-6 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-border/40 shrink-0 min-w-[180px]">
@@ -139,9 +139,6 @@ export function BookingsPage() {
                       size={110}
                       level="H"
                     />
-                  </div>
-                  <div className="mt-3 font-mono text-[11px] text-muted-foreground font-semibold">
-                    REF: {booking.id.slice(0, 8).toUpperCase()}
                   </div>
                 </div>
 

@@ -105,7 +105,7 @@ export function ItineraryResultsPage() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Button
@@ -215,7 +215,7 @@ export function ItineraryResultsPage() {
                 key={idx}
                 className="p-4 sm:p-5 rounded-2xl bg-card border border-border/50 shadow-xs hover:border-border/80 transition-all duration-150 space-y-4 min-w-0 max-w-full overflow-hidden"
               >
-                
+
                 <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-border/30 min-w-0">
                   <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                     <div className="text-lg sm:text-xl font-semibold tracking-tight text-foreground">

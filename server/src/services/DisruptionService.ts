@@ -1,3 +1,4 @@
+import { In } from 'typeorm';
 import { AppDataSource } from '../config/data-source';
 import { redis } from '../config/data-source';
 import { Service } from '../entities/Service';
@@ -8,8 +9,8 @@ import { User } from '../entities/User';
 import { NotFoundError, ForbiddenError, BadRequestError } from '../utils/errors';
 import { ItineraryRankingService, SearchResultPath } from './ItineraryRankingService';
 import { ItinerarySegment } from '../entities/ItinerarySegment';
-import { SseService } from './SseService';
-import { EmailService } from './EmailService';
+import { notifyUser } from './SseService';
+import { sendDisruptionAlert } from './EmailService';
 import crypto from 'crypto';
 
 const MAX_ALTERNATIVES = 3;
@@ -18,9 +19,6 @@ export class DisruptionService {
   private serviceRepo = AppDataSource.getRepository(Service);
   private disruptionRepo = AppDataSource.getRepository(DisruptionEvent);
   private itineraryRepo = AppDataSource.getRepository(Itinerary);
-  private segmentRepo = AppDataSource.getRepository(ItinerarySegment);
-  private ticketRepo = AppDataSource.getRepository(Ticket);
-
   private rankingService = new ItineraryRankingService();
 
   async reportDelay(operatorId: string, serviceId: string, newArrivalTime: Date, description?: string) {
@@ -37,6 +35,10 @@ export class DisruptionService {
     const oldArrival = new Date(service.arrivalTime);
     const delayMinutes = Math.round((newArrivalTime.getTime() - oldArrival.getTime()) / 60000);
 
+    if (delayMinutes <= 0) {
+      throw new BadRequestError('New arrival time must be later than current arrival time');
+    }
+
     service.isDelayed = true;
     service.arrivalTime = newArrivalTime;
     await this.serviceRepo.save(service);
@@ -50,7 +52,7 @@ export class DisruptionService {
     });
     await this.disruptionRepo.save(event);
 
-    await this.cascadeFlag(service, newArrivalTime, description, delayMinutes);
+    await this.notifyAffectedTravelers(service, newArrivalTime, description, delayMinutes);
     return event;
   }
 
@@ -76,18 +78,18 @@ export class DisruptionService {
     });
     await this.disruptionRepo.save(event);
 
-    await this.cascadeFlag(service, null, description);
+    await this.notifyAffectedTravelers(service, null, description);
     return event;
   }
 
-  private async cascadeFlag(
+  private async notifyAffectedTravelers(
     affectedService: Service,
     newArrivalTime: Date | null,
     description?: string,
     delayMinutes?: number
   ) {
     const itineraries = await this.itineraryRepo.find({
-      where: { status: ItineraryStatus.ACTIVE },
+      where: { status: In([ItineraryStatus.ACTIVE, ItineraryStatus.DISRUPTED]) },
       relations: {
         traveler: true,
         segments: {
@@ -106,7 +108,7 @@ export class DisruptionService {
       const isLastLeg = affectedIdx === itinerary.segments.length - 1;
 
       if (!isCancelled && isLastLeg) {
-        EmailService.getInstance().sendDisruptionAlert({
+        sendDisruptionAlert({
           toEmail: itinerary.traveler.email,
           travelerName: itinerary.traveler.name,
           type: 'delay',
@@ -118,7 +120,7 @@ export class DisruptionService {
           newArrivalTime,
           hasAlternatives: false,
           itineraryId: itinerary.id,
-        }).catch(() => {});
+        }).catch((err) => console.warn('Disruption email failed:', err));
         continue;
       }
 
@@ -131,7 +133,7 @@ export class DisruptionService {
       }
 
       if (!connectionBroken) {
-        EmailService.getInstance().sendDisruptionAlert({
+        sendDisruptionAlert({
           toEmail: itinerary.traveler.email,
           travelerName: itinerary.traveler.name,
           type: 'delay',
@@ -143,7 +145,7 @@ export class DisruptionService {
           newArrivalTime,
           hasAlternatives: false,
           itineraryId: itinerary.id,
-        }).catch(() => {});
+        }).catch((err) => console.warn('Disruption email failed:', err));
         continue;
       }
 
@@ -174,7 +176,7 @@ export class DisruptionService {
       itinerary.pendingAlternatives = alternatives as unknown as object[];
       await this.itineraryRepo.save(itinerary);
 
-      SseService.getInstance().notifyUser(itinerary.traveler.id, 'disruption', {
+      notifyUser(itinerary.traveler.id, 'disruption', {
         type: 'disruption',
         itineraryId: itinerary.id,
         serviceNumber: affectedService.serviceNumber,
@@ -185,7 +187,7 @@ export class DisruptionService {
         pendingAlternativesCount: alternatives.length,
       });
 
-      EmailService.getInstance().sendDisruptionAlert({
+      sendDisruptionAlert({
         toEmail: itinerary.traveler.email,
         travelerName: itinerary.traveler.name,
         type: isCancelled ? 'cancellation' : 'delay',
@@ -198,7 +200,7 @@ export class DisruptionService {
         hasAlternatives: alternatives.length > 0,
         alternativeCount: alternatives.length,
         itineraryId: itinerary.id,
-      }).catch(() => {});
+      }).catch((err) => console.warn('Disruption email failed:', err));
     }
   }
 
@@ -298,7 +300,7 @@ export class DisruptionService {
 
       await this.invalidateSearchCacheForServices(chosen.services);
 
-      SseService.getInstance().notifyUser(travelerId, 'resolved', {
+      notifyUser(travelerId, 'resolved', {
         type: 'resolved',
         itineraryId: itinerary.id,
         message: 'Your route alternative was confirmed and your itinerary has been updated.',
@@ -327,7 +329,7 @@ export class DisruptionService {
     }
   }
 
-  private async invalidateSearchCacheForServices(services: Pick<Service, 'id'>[]) {
+  private async invalidateSearchCacheForServices(services: { id: string }[]) {
     for (const service of services) {
       const full = await this.serviceRepo.findOne({
         where: { id: service.id },

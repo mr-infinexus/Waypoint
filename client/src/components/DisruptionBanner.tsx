@@ -1,3 +1,5 @@
+/** Global alert banner notifying travelers of active itinerary disruptions */
+
 import { useState, useEffect } from 'react';
 import { api } from '@/services/api';
 import { AlertTriangle, ArrowRight } from 'lucide-react';
@@ -5,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import type { Itinerary } from '@/types';
+
+const reviewButtonClass = 'text-xs font-semibold bg-amber-500 text-slate-950 hover:bg-amber-400 px-4 py-2 rounded-lg transition-all duration-200 flex items-center gap-2 shrink-0 shadow-sm font-sans';
 
 export function DisruptionBanner() {
   const [disruptedCount, setDisruptedCount] = useState(0);
@@ -19,7 +23,7 @@ export function DisruptionBanner() {
         const count = (data || []).filter((b) => b.status === 'disrupted').length;
         setDisruptedCount(count);
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   useEffect(() => {
@@ -74,7 +78,7 @@ export function DisruptionBanner() {
       </div>
       <button
         onClick={() => navigate('/bookings')}
-        className="text-xs font-semibold bg-amber-500 text-slate-950 hover:bg-amber-400 px-4 py-2 rounded-lg transition-all duration-200 flex items-center gap-2 shrink-0 shadow-sm font-sans"
+        className={reviewButtonClass}
       >
         <span>Review Bookings</span>
         <ArrowRight className="w-4 h-4" />

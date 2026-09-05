@@ -15,6 +15,9 @@ import {
 } from '@/components/ui/sidebar';
 import { Badge } from '@/components/ui/badge';
 
+const activeNavClass = 'bg-primary/15 text-primary font-semibold shadow-sm border border-primary/20';
+const inactiveNavClass = 'hover:bg-accent/40 text-muted-foreground hover:text-foreground transition-all duration-150';
+
 export function AppSidebar() {
   const { role, logout } = useAuth();
   const location = useLocation();
@@ -25,7 +28,7 @@ export function AppSidebar() {
         return [
           { title: 'Dashboard', url: '/admin', icon: LayoutDashboard },
           { title: 'Stations', url: '/admin/stations', icon: MapPin },
-          { title: 'Operators', url: '/admin/operators', icon: Users },
+          { title: 'Accounts', url: '/admin/accounts', icon: Users },
         ];
       case 'operator':
         return [
@@ -62,7 +65,7 @@ export function AppSidebar() {
             <Footprints className="h-5 w-5" />
           </div>
           <div>
-            <div className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-primary via-amber-300 to-accent-foreground bg-clip-text text-transparent">
+            <div className="font-extrabold text-xl tracking-tight text-primary">
               Waypoint
             </div>
             <div className="flex items-center gap-2 mt-1">
@@ -88,7 +91,7 @@ export function AppSidebar() {
                     <SidebarMenuButton
                       asChild
                       isActive={isActive}
-                      className={isActive ? "bg-primary/15 text-primary font-semibold shadow-sm border border-primary/20" : "hover:bg-accent/40 text-muted-foreground hover:text-foreground transition-all duration-150"}
+                      className={isActive ? activeNavClass : inactiveNavClass}
                     >
                       <Link to={item.url} className="flex items-center gap-3 px-3 py-3 rounded-lg">
                         <item.icon className="h-4 w-4 shrink-0" />

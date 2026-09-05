@@ -4,7 +4,8 @@
 
 @custom-variant dark (&:is(.dark *));
 
-:root, .dark {
+:root,
+.dark {
   color-scheme: dark;
   --background: oklch(0.2598 0.0306 262.6666);
   --foreground: oklch(0.9219 0 0);
@@ -132,15 +133,35 @@
     scrollbar-width: thin;
     scrollbar-color: var(--border) transparent;
   }
+
   .custom-scrollbar::-webkit-scrollbar {
     height: 4px;
     width: 4px;
   }
+
   .custom-scrollbar::-webkit-scrollbar-track {
     background: transparent;
   }
+
   .custom-scrollbar::-webkit-scrollbar-thumb {
     background: var(--border);
     border-radius: 4px;
+  }
+
+  .card-glass {
+    @apply p-6 rounded-3xl bg-card/60 backdrop-blur-xl border border-white/10 shadow-2xl;
+  }
+
+  .status-badge {
+    @apply inline-flex items-center gap-2 text-[10px] font-medium px-2 py-1 rounded-full border;
+  }
+  .badge-destructive {
+    @apply text-destructive bg-destructive/10 border-destructive/20;
+  }
+  .badge-warning {
+    @apply text-amber-400 bg-amber-500/10 border-amber-500/20;
+  }
+  .badge-success {
+    @apply text-emerald-400 bg-emerald-500/10 border-emerald-500/20;
   }
 }

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { BookingService } from '../services/BookingService';
 import { DisruptionService } from '../services/DisruptionService';
-import { SseService } from '../services/SseService';
+import { addClient } from '../services/SseService';
 
 const bookingService = new BookingService();
 const disruptionService = new DisruptionService();
@@ -59,6 +59,6 @@ export class BookingController {
 
   static streamDisruptions(req: Request, res: Response) {
     const travelerId = req.user!.userId;
-    SseService.getInstance().addClient(travelerId, res);
+    addClient(travelerId, res);
   }
 }

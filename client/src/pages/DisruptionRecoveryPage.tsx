@@ -184,13 +184,13 @@ export function DisruptionRecoveryPage() {
             <span className="text-muted-foreground">Original Ticket Credit (Unused Leg):</span>
             <span className="font-bold text-foreground">₹{oldLegsCost.toLocaleString('en-IN')}</span>
           </div>
-          <div className="text-[11px] text-muted-foreground">
+          <div className="text-sm text-muted-foreground">
             Credit applied directly towards your selected alternative route
           </div>
         </div>
 
         <div className="space-y-1">
-          <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Your original journey</p>
+          <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Your original journey</p>
           <div className="w-full min-w-0 overflow-x-auto custom-scrollbar overscroll-x-contain py-1">
             <JourneyTimeline
               services={segments.map(s => s.service)}
@@ -226,7 +226,7 @@ export function DisruptionRecoveryPage() {
               return (
                 <div
                   key={idx}
-                  className="p-5 rounded-2xl bg-card border border-border/60 shadow-xs hover:border-primary/40 transition-all duration-150 space-y-4"
+                  className="card-glass shadow-xs hover:border-primary/40 transition-all duration-150 space-y-4"
                 >
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div className="flex flex-wrap items-center gap-3">
@@ -275,7 +275,7 @@ export function DisruptionRecoveryPage() {
                     </div>
 
                     {firstAlt && lastAlt && (
-                      <span className="text-[11px] font-mono text-muted-foreground">
+                      <span className="text-sm font-mono text-muted-foreground">
                         {format(new Date(firstAlt.departureTime), 'HH:mm')} → {format(new Date(lastAlt.arrivalTime), 'HH:mm')}
                       </span>
                     )}
@@ -311,20 +311,19 @@ export function DisruptionRecoveryPage() {
                       {isExtraPayable
                         ? `Pay difference of ₹${diff.toLocaleString('en-IN')} to confirm new bookings.`
                         : isRefund
-                        ? `Claim ₹${refundAmount.toLocaleString('en-IN')} refund and confirm new bookings.`
-                        : 'Old tickets voided and replaced with new bookings at no extra charge.'}
+                          ? `Claim ₹${refundAmount.toLocaleString('en-IN')} refund and confirm new bookings.`
+                          : 'Old tickets voided and replaced with new bookings at no extra charge.'}
                     </p>
                     <Button
                       id={`btn-accept-alternative-${idx}`}
                       onClick={() => handleAccept(idx, diff)}
                       disabled={accepting !== null}
-                      className={`w-full sm:w-auto h-10 px-5 rounded-lg font-semibold text-xs shadow-xs transition-all ${
-                        isExtraPayable
-                          ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-                          : isRefund
+                      className={`w-full sm:w-auto h-10 px-5 rounded-lg font-semibold text-xs shadow-xs transition-all ${isExtraPayable
+                        ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                        : isRefund
                           ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
                           : ''
-                      }`}
+                        }`}
                     >
                       {isAccepting ? (
                         <>

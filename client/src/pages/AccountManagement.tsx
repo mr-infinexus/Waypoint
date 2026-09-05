@@ -40,7 +40,7 @@ interface TravelerUser {
 
 const ITEMS_PER_PAGE = 8;
 
-export function OperatorManagement() {
+export function AccountManagement() {
   const [activeTab, setActiveTab] = useState<"operators" | "users">("operators");
   const [operators, setOperators] = useState<Operator[]>([]);
   const [users, setUsers] = useState<TravelerUser[]>([]);
@@ -152,7 +152,7 @@ export function OperatorManagement() {
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Access & Account Control</h1>
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Accounts Control</h1>
             <p className="text-sm text-muted-foreground mt-1">
               Review incoming operator applications, grant verified access, and manage user permissions.
             </p>
@@ -197,7 +197,7 @@ export function OperatorManagement() {
           <div className="relative w-full sm:w-72">
             <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
             <Input
-              placeholder={activeTab === "operators" ? "Search operator or email..." : "Search traveler..."}
+              placeholder={activeTab === "operators" ? "Search operator or email" : "Search traveler"}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="h-9 pl-9 bg-background/60 border-border/70 rounded-xl text-xs"
@@ -246,7 +246,6 @@ export function OperatorManagement() {
                               </div>
                               <div>
                                 <div className="text-foreground">{op.name}</div>
-                                <div className="text-[10px] font-mono text-muted-foreground">ID: {op.id.slice(0, 8)}...</div>
                               </div>
                             </div>
                           </TableCell>
@@ -258,8 +257,8 @@ export function OperatorManagement() {
                             <Badge
                               variant="outline"
                               className={`text-[10px] font-bold uppercase tracking-wider py-0.5 px-2 rounded-md ${isActive
-                                  ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
-                                  : "bg-amber-500/10 text-amber-400 border-amber-500/30"
+                                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
+                                : "bg-amber-500/10 text-amber-400 border-amber-500/30"
                                 }`}
                             >
                               {isActive ? (
@@ -326,7 +325,6 @@ export function OperatorManagement() {
                               </div>
                               <div>
                                 <div className="text-foreground">{user.name}</div>
-                                <div className="text-[10px] font-mono text-muted-foreground">ID: {user.id.slice(0, 8)}...</div>
                               </div>
                             </div>
                           </TableCell>
@@ -338,8 +336,8 @@ export function OperatorManagement() {
                             <Badge
                               variant="outline"
                               className={`text-[10px] font-bold uppercase tracking-wider py-0.5 px-2 rounded-md ${isActive
-                                  ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
-                                  : "bg-rose-500/10 text-rose-400 border-rose-500/30"
+                                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
+                                : "bg-rose-500/10 text-rose-400 border-rose-500/30"
                                 }`}
                             >
                               {isActive ? (
@@ -450,4 +448,4 @@ export function OperatorManagement() {
   );
 }
 
-export default OperatorManagement;
+export default AccountManagement;

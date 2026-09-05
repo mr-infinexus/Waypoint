@@ -24,7 +24,13 @@ const stationSchema = z.object({
   longitude: z.coerce.number().min(-180, 'Longitude must be >= -180').max(180, 'Longitude must be <= 180'),
 });
 
-type StationFormValues = z.infer<typeof stationSchema>;
+interface StationFormValues {
+  code: string;
+  name: string;
+  city: string;
+  latitude: number;
+  longitude: number;
+}
 
 const selectedMarkerIcon = L.divIcon({
   className: 'custom-selected-station-pin',

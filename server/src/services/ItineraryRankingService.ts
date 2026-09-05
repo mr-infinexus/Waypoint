@@ -71,7 +71,11 @@ function tryAdd(bag: LabelBag, stationId: string, newLabel: Label): boolean {
 function cloneBag(source: LabelBag): LabelBag {
   const copy: LabelBag = new Map();
   for (const [k, v] of source) {
-    copy.set(k, [...v.map((l) => ({ ...l }))]);
+    const labels: Label[] = [];
+    for (const label of v) {
+      labels.push({ ...label });
+    }
+    copy.set(k, labels);
   }
   return copy;
 }
@@ -189,7 +193,9 @@ export class ItineraryRankingService {
       const transitMarked = new Set<string>();
 
       for (const stationId of markedStations) {
-        const labelsAtStation = bags[k - 1].get(stationId) ?? [];
+        const labelsAtStation = (bags[k - 1].get(stationId) ?? []).filter(
+          (l) => l.transfers === k - 1
+        );
 
         for (const label of labelsAtStation) {
           const isOriginStation = originCandidateMap.has(stationId);

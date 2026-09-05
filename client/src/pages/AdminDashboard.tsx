@@ -79,7 +79,7 @@ export function AdminDashboard() {
           <div className="p-2 rounded-lg bg-primary/15 text-primary">
             <ShieldCheck className="w-4 h-4" />
           </div>
-          <h1 className="text-3xl font-black tracking-tight">Network Administration</h1>
+          <h1 className="text-3xl font-black tracking-tight">Administration</h1>
         </div>
         <p className="text-sm text-muted-foreground">
           Real-time health telemetry, operator onboarding, and nationwide waypoint management.
@@ -87,7 +87,7 @@ export function AdminDashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div className="p-6 rounded-3xl bg-card/60 backdrop-blur-xl border border-white/10 shadow-2xl space-y-4 relative overflow-hidden">
+        <div className="card-glass space-y-4 relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
               Total Operators
@@ -104,7 +104,7 @@ export function AdminDashboard() {
           </p>
         </div>
 
-        <div className="p-6 rounded-3xl bg-card/60 backdrop-blur-xl border border-white/10 shadow-2xl space-y-4 relative overflow-hidden">
+        <div className="card-glass space-y-4 relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
               Active Itineraries
@@ -121,7 +121,7 @@ export function AdminDashboard() {
           </p>
         </div>
 
-        <div className="p-6 rounded-3xl bg-card/60 backdrop-blur-xl border border-white/10 shadow-2xl space-y-4 relative overflow-hidden">
+        <div className="card-glass space-y-4 relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
               Disrupted Itineraries
@@ -146,7 +146,7 @@ export function AdminDashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div
             onClick={() => navigate('/admin/stations')}
-            className="p-6 rounded-3xl bg-card/60 backdrop-blur-xl border border-white/10 shadow-xl hover:border-primary/50 transition-all duration-200 cursor-pointer group flex items-center justify-between"
+            className="card-glass hover:border-primary/50 transition-all duration-200 cursor-pointer group flex items-center justify-between"
           >
             <div className="flex items-center gap-4">
               <div className="p-4 rounded-2xl bg-primary/15 text-primary group-hover:scale-110 transition-transform">
@@ -166,7 +166,7 @@ export function AdminDashboard() {
 
           <div
             onClick={() => navigate('/admin/operators')}
-            className="p-6 rounded-3xl bg-card/60 backdrop-blur-xl border border-white/10 shadow-xl hover:border-primary/50 transition-all duration-200 cursor-pointer group flex items-center justify-between"
+            className="card-glass hover:border-primary/50 transition-all duration-200 cursor-pointer group flex items-center justify-between"
           >
             <div className="flex items-center gap-4">
               <div className="p-4 rounded-2xl bg-amber-500/15 text-amber-400 group-hover:scale-110 transition-transform">

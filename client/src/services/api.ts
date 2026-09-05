@@ -1,3 +1,5 @@
+/** Centralized fetch wrapper for making authenticated API requests */
+
 const BASE_URL = '/api';
 
 export class ApiError extends Error {

@@ -20,7 +20,7 @@ const DisruptionRecoveryPage = lazy(() => import('./pages/DisruptionRecoveryPage
 const OperatorDashboard = lazy(() => import('./pages/OperatorDashboard'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const StationManagement = lazy(() => import('./pages/StationManagement'));
-const OperatorManagement = lazy(() => import('./pages/OperatorManagement'));
+const AccountManagement = lazy(() => import('./pages/AccountManagement'));
 
 function StatusView({ title, message, isAuth = false }: { title: string; message: string; isAuth?: boolean }) {
   return (
@@ -76,11 +76,11 @@ export default function App() {
               <Route element={<AdminLayout />}>
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/stations" element={<StationManagement />} />
-                <Route path="/admin/operators" element={<OperatorManagement />} />
+                <Route path="/admin/accounts" element={<AccountManagement />} />
               </Route>
             </Route>
 
-            <Route path="*" element={<StatusView title="Page Not Found" message="The requested transit route or page does not exist." />} />
+            <Route path="*" element={<StatusView title="Page Not Found" message="The requested page does not exist." />} />
           </Routes>
         </Suspense>
       </BrowserRouter>

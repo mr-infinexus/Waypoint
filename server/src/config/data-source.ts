@@ -1,3 +1,5 @@
+/** Database and Redis connection configurations */
+
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import * as dotenv from 'dotenv';

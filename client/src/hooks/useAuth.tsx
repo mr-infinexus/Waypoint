@@ -1,3 +1,5 @@
+/** Authentication context provider and hook for user roles and sessions */
+
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { api } from '@/services/api';
@@ -44,7 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     try {
       await api('/auth/logout', { method: 'POST' });
-    } catch {}
+    } catch { }
     setToken(null);
   };
 

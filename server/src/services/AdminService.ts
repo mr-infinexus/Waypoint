@@ -7,6 +7,7 @@ import { BadRequestError, NotFoundError } from "../utils/errors";
 export class AdminService {
   private stationRepository = AppDataSource.getRepository(Station);
   private userRepository = AppDataSource.getRepository(User);
+  private itineraryRepository = AppDataSource.getRepository(Itinerary);
 
   async createStation(code: string, name: string, city: string, latitude?: number, longitude?: number) {
     const existing = await this.stationRepository.findOneBy({ code });
@@ -73,11 +74,9 @@ export class AdminService {
   }
 
   async getDashboardStats() {
-    const itineraryRepo = AppDataSource.getRepository(Itinerary);
-
     const totalOperators = await this.userRepository.count({ where: { role: UserRole.OPERATOR } });
-    const activeItineraries = await itineraryRepo.count({ where: { status: ItineraryStatus.ACTIVE } });
-    const disruptedItineraries = await itineraryRepo.count({ where: { status: ItineraryStatus.DISRUPTED } });
+    const activeItineraries = await this.itineraryRepository.count({ where: { status: ItineraryStatus.ACTIVE } });
+    const disruptedItineraries = await this.itineraryRepository.count({ where: { status: ItineraryStatus.DISRUPTED } });
 
     return {
       totalOperators,

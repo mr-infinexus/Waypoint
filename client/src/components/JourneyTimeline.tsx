@@ -1,3 +1,6 @@
+/** Multi-modal horizontal journey timeline visualization */
+
+import type { ElementType } from 'react';
 import { Plane, TrainFront, Bus, TramFront, Footprints, Clock, ShieldCheck } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -10,13 +13,16 @@ export interface JourneyTimelineProps {
   className?: string;
 }
 
-const MODE_CONFIG: Record<ServiceType, { icon: typeof Plane; color: string; line: string; label: string }> = {
+const MODE_CONFIG: Record<ServiceType, { icon: ElementType; color: string; line: string; label: string }> = {
   flight: { icon: Plane, color: 'text-sky-400', line: 'border-sky-500/30', label: 'Flight' },
   train: { icon: TrainFront, color: 'text-violet-400', line: 'border-violet-500/30', label: 'Train' },
   bus: { icon: Bus, color: 'text-amber-400', line: 'border-amber-500/30', label: 'Bus' },
   metro: { icon: TramFront, color: 'text-emerald-400', line: 'border-emerald-500/30', label: 'Metro' },
   walk: { icon: Footprints, color: 'text-muted-foreground', line: 'border-border/60', label: 'Walk' },
 };
+
+const walkBadgeClass = 'flex flex-col items-center bg-muted/30 border border-dashed border-border/60 rounded-lg px-3 py-2 text-muted-foreground shrink-0 whitespace-nowrap min-w-[100px]';
+const stationNodeClass = 'flex flex-col items-center shrink-0 min-w-[76px] px-1 text-center';
 
 const formatDurationMs = (diffMs: number) => {
   const totalMins = Math.max(0, Math.round(diffMs / 60000));
@@ -34,7 +40,7 @@ const formatWalkDistance = (distanceKm: number) => {
 
 function WalkBadge({ walk }: { walk: WalkLeg }) {
   return (
-    <div className="flex flex-col items-center bg-muted/30 border border-dashed border-border/60 rounded-lg px-3 py-2 text-muted-foreground shrink-0 whitespace-nowrap min-w-[100px]">
+    <div className={walkBadgeClass}>
       <div className="flex items-center gap-2 text-xs font-medium text-foreground whitespace-nowrap">
         <Footprints className="w-4 h-4 text-muted-foreground shrink-0" />
         <span>Walk {formatWalkDistance(walk.distanceKm)}</span>
@@ -48,7 +54,7 @@ function WalkBadge({ walk }: { walk: WalkLeg }) {
 
 function StationNode({ time, station }: { time: string; station?: Station | null }) {
   return (
-    <div className="flex flex-col items-center shrink-0 min-w-[76px] px-1 text-center">
+    <div className={stationNodeClass}>
       <span className="text-xs font-mono font-medium text-muted-foreground mb-1 whitespace-nowrap">
         {format(new Date(time), 'HH:mm')}
       </span>

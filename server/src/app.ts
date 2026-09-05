@@ -1,6 +1,12 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth.routes';
+import adminRoutes from './routes/admin.routes';
+import serviceRoutes from './routes/services.routes';
+import searchRoutes from './routes/search.routes';
+import bookingRoutes from './routes/booking.routes';
+import stationsRoutes from './routes/stations.routes';
+import docsRoutes from './routes/docs.routes';
 import { errorHandler } from './middlewares/error.middleware';
 import { authenticateJWT } from './middlewares/auth.middleware';
 import { requireRole } from './middlewares/role.middleware';
@@ -13,13 +19,6 @@ app.use(cookieParser());
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok', message: 'Waypoint API is running' });
 });
-
-import adminRoutes from './routes/admin.routes';
-import serviceRoutes from './routes/services.routes';
-import searchRoutes from './routes/search.routes';
-import bookingRoutes from './routes/booking.routes';
-import stationsRoutes from './routes/stations.routes';
-import docsRoutes from './routes/docs.routes';
 
 app.use('/api/docs', docsRoutes);
 

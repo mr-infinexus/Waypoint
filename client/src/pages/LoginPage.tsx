@@ -15,7 +15,10 @@ const loginSchema = z.object({
   password: z.string().min(1, 'Password is required'),
 });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+interface LoginFormValues {
+  email: string;
+  password: string;
+}
 
 export function LoginPage() {
   const [error, setError] = useState('');
@@ -91,7 +94,7 @@ export function LoginPage() {
             <span className="flex items-center gap-2 text-violet-400"><TrainFront className="w-4 h-4" /> Railways</span>
             <span className="flex items-center gap-2 text-amber-400"><Bus className="w-4 h-4" /> Express Bus</span>
             <span className="flex items-center gap-2 text-emerald-400"><TramFront className="w-4 h-4" /> Metro</span>
-            <span className="flex items-center gap-2 text-slate-400"><Footprints className="w-4 h-4" /> Walk Sync</span>
+            <span className="flex items-center gap-2 text-slate-400"><Footprints className="w-4 h-4" /> Walk</span>
           </div>
         </div>
 
@@ -120,7 +123,7 @@ export function LoginPage() {
 
             {/* Quick Demo Autofill */}
             <div className="space-y-2 p-3 rounded-2xl bg-muted/30 border border-border/50">
-              <div className="flex items-center justify-between text-[11px] text-muted-foreground font-medium">
+              <div className="flex items-center justify-between text-xs text-muted-foreground font-medium">
                 <span className="flex items-center gap-2 uppercase tracking-wider font-semibold">
                   <Sparkles className="w-4 h-4 text-primary" /> Demo Logins
                 </span>
@@ -130,7 +133,7 @@ export function LoginPage() {
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={() => fillCredentials('admin@waypoint.com', 'Password123!')}
+                  onClick={() => fillCredentials('admin@waypoint.in', 'Password123!')}
                   className="h-8 text-xs font-medium border-border/60 hover:bg-primary/10 hover:border-primary/40 hover:text-primary transition-colors flex items-center justify-center gap-1"
                 >
                   <Shield className="w-4 h-4 text-rose-400 shrink-0" />
@@ -150,7 +153,7 @@ export function LoginPage() {
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={() => fillCredentials('aarav@gmail.com', 'Password123!')}
+                  onClick={() => fillCredentials('aarav@email.com', 'Password123!')}
                   className="h-8 text-xs font-medium border-border/60 hover:bg-primary/10 hover:border-primary/40 hover:text-primary transition-colors flex items-center justify-center gap-1"
                 >
                   <User className="w-4 h-4 text-sky-400 shrink-0" />

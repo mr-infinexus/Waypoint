@@ -1,6 +1,6 @@
 [
   {
-    "travelerEmail": "aarav@gmail.com",
+    "travelerEmail": "aarav@email.com",
     "status": "active",
     "serviceNumbers": [
       "METRO-DEL-AIR-03",
@@ -9,7 +9,7 @@
     "ticketStatus": "valid"
   },
   {
-    "travelerEmail": "aarav@gmail.com",
+    "travelerEmail": "aarav@email.com",
     "status": "active",
     "serviceNumbers": [
       "TR-12301"
@@ -17,7 +17,7 @@
     "ticketStatus": "valid"
   },
   {
-    "travelerEmail": "ananya@gmail.com",
+    "travelerEmail": "ananya@email.com",
     "status": "disrupted",
     "serviceNumbers": [
       "6E-201",
@@ -26,7 +26,7 @@
     "ticketStatus": "valid"
   },
   {
-    "travelerEmail": "ananya@gmail.com",
+    "travelerEmail": "ananya@email.com",
     "status": "active",
     "serviceNumbers": [
       "6E-331",
@@ -35,7 +35,7 @@
     "ticketStatus": "valid"
   },
   {
-    "travelerEmail": "rohan@gmail.com",
+    "travelerEmail": "rohan@email.com",
     "status": "completed",
     "serviceNumbers": [
       "TR-20608"
@@ -43,7 +43,7 @@
     "ticketStatus": "valid"
   },
   {
-    "travelerEmail": "priya@gmail.com",
+    "travelerEmail": "priya@email.com",
     "status": "active",
     "serviceNumbers": [
       "TR-20606",

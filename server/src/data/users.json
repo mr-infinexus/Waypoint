@@ -1,7 +1,7 @@
 [
   {
     "name": "Platform Superadmin",
-    "email": "admin@waypoint.com",
+    "email": "admin@waypoint.in",
     "role": "admin",
     "isActive": true
   },
@@ -43,25 +43,25 @@
   },
   {
     "name": "Aarav Patel",
-    "email": "aarav@gmail.com",
+    "email": "aarav@email.com",
     "role": "traveler",
     "isActive": true
   },
   {
     "name": "Ananya Iyer",
-    "email": "ananya@gmail.com",
+    "email": "ananya@email.com",
     "role": "traveler",
     "isActive": true
   },
   {
     "name": "Rohan Sharma",
-    "email": "rohan@gmail.com",
+    "email": "rohan@email.com",
     "role": "traveler",
     "isActive": true
   },
   {
     "name": "Priya Nair",
-    "email": "priya@gmail.com",
+    "email": "priya@email.com",
     "role": "traveler",
     "isActive": true
   }

@@ -62,7 +62,7 @@ export function OperatorDashboard() {
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [creating, setCreating] = useState(false);
-  const [createErrors, setCreateErrors] = useState<Record<string, string>>({});
+  const [createErrors, setCreateErrors] = useState<{ [field: string]: string }>({});
 
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
 
@@ -666,17 +666,17 @@ export function OperatorDashboard() {
                     </span>
 
                     {isCancelled ? (
-                      <span className="inline-flex items-center gap-2 text-[10px] font-medium text-destructive px-2 py-1 rounded-full bg-destructive/10 border border-destructive/20">
+                      <span className="status-badge badge-destructive">
                         <span className="w-2 h-2 rounded-full bg-destructive" />
                         Cancelled
                       </span>
                     ) : isDelayed ? (
-                      <span className="inline-flex items-center gap-2 text-[10px] font-medium text-amber-400 px-2 py-1 rounded-full bg-amber-500/10 border border-amber-500/20">
+                      <span className="status-badge badge-warning">
                         <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
                         Delayed
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-2 text-[10px] font-medium text-emerald-400 px-2 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                      <span className="status-badge badge-success">
                         <span className="w-2 h-2 rounded-full bg-emerald-500" />
                         On Time
                       </span>

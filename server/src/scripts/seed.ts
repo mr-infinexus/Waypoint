@@ -55,7 +55,7 @@ export async function runComprehensiveSeed() {
 
   const defaultHash = await bcrypt.hash('Password123!', 10);
 
-  console.log(`Seeding ${usersData.length} users...`);
+  console.log(`Seeding ${usersData.length} users`);
   const userEntities = usersData.map((u) =>
     userRepo.create({
       name: u.name,
@@ -68,7 +68,7 @@ export async function runComprehensiveSeed() {
   const savedUsers = await userRepo.save(userEntities);
   const userMap = new Map<string, User>(savedUsers.map((u) => [u.email, u]));
 
-  console.log(`Seeding ${stationsData.length} stations...`);
+  console.log(`Seeding ${stationsData.length} stations`);
   const stationEntities = stationsData.map((s) =>
     stationRepo.create({
       code: s.code,
@@ -81,7 +81,7 @@ export async function runComprehensiveSeed() {
   const savedStations = await stationRepo.save(stationEntities);
   const stationMap = new Map<string, Station>(savedStations.map((s) => [s.code, s]));
 
-  console.log(`Seeding services from ${servicesData.length} route templates...`);
+  console.log(`Seeding services from ${servicesData.length} route templates`);
   const now = new Date();
 
   function buildDate(dayOffset: number, hour: number, minute: number): Date {
@@ -151,7 +151,7 @@ export async function runComprehensiveSeed() {
   const srvMap = new Map<string, Service>(savedServices.map((s) => [s.serviceNumber, s]));
   console.log(`Successfully saved ${savedServices.length} active service instances.`);
 
-  console.log(`Seeding ${disruptionsData.length} disruption events...`);
+  console.log(`Seeding ${disruptionsData.length} disruption events`);
   for (const d of disruptionsData) {
     const service = srvMap.get(d.serviceNumber);
     if (!service) {
@@ -182,7 +182,7 @@ export async function runComprehensiveSeed() {
 
   const rankingService = new ItineraryRankingService();
 
-  console.log(`Seeding ${itinerariesData.length} itineraries with segments and tickets...`);
+  console.log(`Seeding ${itinerariesData.length} itineraries with segments and tickets`);
   for (const itData of itinerariesData) {
     const traveler = userMap.get(itData.travelerEmail);
     if (!traveler) {
@@ -253,16 +253,6 @@ export async function runComprehensiveSeed() {
   }
 
   console.log('Seeding complete.');
-  console.log('----------------------------------------------------');
-  console.log('Summary:');
-  console.log(`  Users:        ${savedUsers.length}`);
-  console.log(`  Stations:     ${savedStations.length}`);
-  console.log(`  Services:     ${savedServices.length}`);
-  console.log('Credentials (Password: Password123!):');
-  console.log('  Superadmin:   admin@waypoint.com');
-  console.log('  Operators:    ops@indigo.in, ops@airindia.in, ops@indianrail.gov.in, ops@metrotransit.in, ops@statebuses.in');
-  console.log('  Travelers:    aarav@gmail.com, ananya@gmail.com, rohan@gmail.com, priya@gmail.com');
-  console.log('----------------------------------------------------');
 
   await queryRunner.release();
 }

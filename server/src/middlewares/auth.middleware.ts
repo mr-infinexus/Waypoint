@@ -20,10 +20,17 @@ declare global {
 }
 
 export const authenticateJWT = async (req: Request, res: Response, next: NextFunction) => {
-  const token =
-    req.cookies.jwt ||
-    req.headers.authorization?.split(' ')[1] ||
-    (typeof req.query.token === 'string' ? req.query.token : undefined);
+  let token: string | undefined;
+
+  if (req.cookies && req.cookies.jwt) {
+    token = req.cookies.jwt;
+  } else if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+    token = req.headers.authorization.split(' ')[1];
+  } else if (req.headers.authorization) {
+    token = req.headers.authorization.split(' ')[1];
+  } else if (typeof req.query.token === 'string') {
+    token = req.query.token;
+  }
 
   if (!token) {
     return next(new UnauthorizedError('Authentication token missing'));
